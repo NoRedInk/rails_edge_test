@@ -7,3 +7,9 @@ require "rails_edge_test/let_handler"
 
 module RailsEdgeTest
 end
+
+# TODO:
+# - File output + configuration
+# - Rake task + Railtie + configuration
+# - DatabaseCleaner + configuration
+# - Factory[Girl/Bot] + configuration
