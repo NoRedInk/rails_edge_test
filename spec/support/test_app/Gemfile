@@ -9,3 +9,6 @@ gem 'sqlite3'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 
+group :test do
+  gem 'rails_edge_test', path: '../../..'
+end

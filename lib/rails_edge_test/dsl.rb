@@ -11,14 +11,18 @@ module RailsEdgeTest
     end
 
     def self.execute!
+      count = 0
       @controllers.each do |controller|
         controller.__actions.each do |action|
           action.__edges.each do |edge, block|
             edge.__define_lets(action.__lets_handler)
             edge.instance_exec(&block)
+            count += 1
           end
         end
       end
+
+      count
     end
 
     def self.add(controller)

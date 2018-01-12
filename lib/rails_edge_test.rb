@@ -5,6 +5,7 @@ require "rails_edge_test/action"
 require "rails_edge_test/edge"
 require "rails_edge_test/let_handler"
 require "rails_edge_test/configuration"
+require "rails_edge_test/railtie"
 
 module RailsEdgeTest
   module_function
@@ -18,6 +19,5 @@ module RailsEdgeTest
 end
 
 # TODO:
-# - Rake task + Railtie + configuration
 # - DatabaseCleaner + configuration
 # - Factory[Girl/Bot] + configuration
