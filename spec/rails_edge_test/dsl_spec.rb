@@ -1,12 +1,38 @@
 require 'rails_helper'
 
 MyController = Class.new ActionController::Base do
-  def new
+  def simple
     render json: {my: 'response'}
+  end
+
+  def complex
+    if request.xhr?
+      render json: {local: 'info', params: params, session: session.to_h}
+    else
+      redirect_to '/'
+    end
+  end
+end
+
+AnotherController = Class.new ActionController::Base do
+  def another
+    render json: {another: 'response'}
   end
 end
 
 RSpec.describe RailsEdgeTest::Dsl do
+  before(:all) do
+    Rails.application.routes.draw do
+      get 'test/simple' => 'my#simple'
+      get 'test/complex' => 'my#complex'
+
+      get 'test/another' => 'another#another'
+    end
+  end
+  after(:all) do
+    Rails.application.reload_routes!
+  end
+
   before do
     RailsEdgeTest::Dsl.reset!
   end
@@ -20,7 +46,7 @@ RSpec.describe RailsEdgeTest::Dsl do
         extend RailsEdgeTest::Dsl
 
         controller MyController do
-          action :new do
+          action :simple do
             edge "do very little" do
               test_value = controller
             end
@@ -40,7 +66,7 @@ RSpec.describe RailsEdgeTest::Dsl do
         extend RailsEdgeTest::Dsl
 
         controller MyController do
-          action :new do
+          action :simple do
             edge "do very little" do
               test_value = request
             end
@@ -60,7 +86,7 @@ RSpec.describe RailsEdgeTest::Dsl do
         extend RailsEdgeTest::Dsl
 
         controller MyController do
-          action :new do
+          action :simple do
             edge "set the session" do
               test_value = session
               session[:beyonce] = 'run the world'
@@ -82,8 +108,8 @@ RSpec.describe RailsEdgeTest::Dsl do
         extend RailsEdgeTest::Dsl
 
         controller MyController do
-          action :new do
-            edge "get :new" do
+          action :simple do
+            edge "get :simple" do
               test_value = perform_get
             end
           end
@@ -96,6 +122,124 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
       expect(test_value[2].body).to eq({my: 'response'}.to_json)
+    end
+
+    it "can incorporate request, session, and params when making a request" do
+      test_value = nil
+      expected_value = {
+        local: 'info',
+        params: {adele: 'hello', controller: 'my', action: 'complex'},
+        session: {britney: 'toxic'}
+      }
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :complex do
+            edge "get :complex" do
+              request.headers["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
+              session[:britney] = 'toxic'
+              test_value = perform_get(adele: 'hello')
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value[0]).to eq 200
+      expect(test_value[1]).to be_a Hash
+      expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
+      expect(test_value[2].body).to eq(expected_value.to_json)
+    end
+
+    it "will execute multiple edges on the same action" do
+      test_value_one = nil
+      test_value_two = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :simple do
+            edge "get :simple" do
+              test_value_one = perform_get
+            end
+
+            edge "just looking" do
+              test_value_two = controller
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value_two).to be_a MyController
+    end
+
+    it "will execute multiple edges on different actions" do
+      test_value_one = nil
+      test_value_two = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :simple do
+            edge "get :simple" do
+              test_value_one = perform_get
+            end
+          end
+
+          action :complex do
+            edge "redirecting" do
+              test_value_two = perform_get
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value_two[0]).to eq 302
+    end
+
+    it "will execute multiple edges on different controllers" do
+      test_value_one = nil
+      test_value_two = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :simple do
+            edge "get :simple" do
+              test_value_one = perform_get
+            end
+          end
+        end
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller AnotherController do
+          action :another do
+            edge "get :another" do
+              test_value_two = perform_get
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value_two[2].body).to eq({another: 'response'}.to_json)
     end
   end
 end
