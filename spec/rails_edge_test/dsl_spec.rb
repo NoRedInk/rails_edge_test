@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-MyController = Class.new ActionController::Base do
+class MyController < ActionController::Base
   def simple
     render json: {my: 'response'}
   end

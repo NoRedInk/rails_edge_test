@@ -25,5 +25,14 @@ module RailsEdgeTest
 
       @response = controller.dispatch(action, request)
     end
+
+    def __define_lets(lets_handler)
+      @let_cache = {}
+      lets_handler.let_blocks.each do |title, block|
+        define_singleton_method(title) do
+          @let_cache[title] ||= instance_eval(&block)
+        end
+      end
+    end
   end
 end

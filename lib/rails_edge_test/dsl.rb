@@ -14,6 +14,7 @@ module RailsEdgeTest
       @controllers.each do |controller|
         controller.__actions.each do |action|
           action.__edges.each do |edge, block|
+            edge.__define_lets(action.__lets_handler)
             edge.instance_exec(&block)
           end
         end
