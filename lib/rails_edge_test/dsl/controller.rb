@@ -5,14 +5,14 @@ module RailsEdgeTest::Dsl
       @actions = []
     end
 
-    def __actions
-      @actions
+    def action(name, &block)
+      new_action = Action.new(name, controller_class)
+      new_action.instance_exec(&block)
+      @actions << new_action
     end
 
-    def action(name, &block)
-      ret_action = Action.new(name, controller_class)
-      ret_action.instance_exec(&block)
-      @actions << ret_action
+    def __actions
+      @actions
     end
   end
 end

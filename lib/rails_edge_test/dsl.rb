@@ -21,7 +21,7 @@ module RailsEdgeTest
               action.__edges.each do |edge, block|
 
                 RailsEdgeTest.configuration.wrap_edge_execution do
-                  define_lets(edge, action.__lets_handler)
+                  define_lets(edge, action.__let_handler)
                   edge.instance_exec(&block)
                   count += 1
                 end
