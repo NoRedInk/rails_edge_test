@@ -20,8 +20,6 @@ namespace :rails_edge_test do
       load file
     end
 
-    count = RailsEdgeTest::Dsl.execute!
-
-    puts "#{count} edge specs executed."
+    RailsEdgeTest::Dsl.execute!
   end
 end

@@ -8,4 +8,10 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before(:suite) do
+    RailsEdgeTest.configure do |ret_config|
+      ret_config.printer = RailsEdgeTest::Printers::Silent
+    end
+  end
 end

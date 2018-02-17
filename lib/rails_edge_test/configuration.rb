@@ -1,10 +1,11 @@
 module RailsEdgeTest
   class Configuration
-    attr_accessor :elm_path, :edge_root_path
+    attr_accessor :elm_path, :edge_root_path, :printer
 
     def initialize
       self.elm_path = Rails.root.join('spec')
       self.edge_root_path = Rails.root.join('spec', 'edge')
+      self.printer = Printers::Boring
       @before_suite_blocks = []
       @before_each_blocks = []
       @after_each_blocks = []

@@ -12,27 +12,36 @@ module RailsEdgeTest
       end
 
       def execute!
-        count = 0
+        printer = RailsEdgeTest.configuration.printer.new
+        printer.begin_suite
 
         RailsEdgeTest.configuration.wrap_suite_execution do
 
           @controllers.each do |controller|
+            printer.begin_controller(controller)
+
             controller.__actions.each do |action|
+              printer.begin_action(action)
+
               action.__edges.each do |edge, block|
+                printer.begin_edge(edge)
 
                 RailsEdgeTest.configuration.wrap_edge_execution do
                   define_lets(edge, action.__let_handler)
                   edge.instance_exec(&block)
-                  count += 1
                 end
 
+                printer.end_edge
               end
+
+              printer.end_action
             end
+
+            printer.end_controller
           end
 
         end
-
-        count
+        printer.end_suite
       end
 
       def add(controller)
