@@ -21,4 +21,5 @@ end
 # TODO:
 # - DatabaseCleaner + configuration
 # - Factory[Girl/Bot] + configuration
+# - Flesh out the README
 # - Refactor LetHelper to define a Module, and include it when necessary
