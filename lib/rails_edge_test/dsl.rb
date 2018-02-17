@@ -16,7 +16,7 @@ module RailsEdgeTest
         @controllers.each do |controller|
           controller.__actions.each do |action|
             action.__edges.each do |edge, block|
-              edge.__define_lets(action.__lets_handler)
+              define_lets(edge, action.__lets_handler)
               edge.instance_exec(&block)
               count += 1
             end
@@ -28,6 +28,15 @@ module RailsEdgeTest
 
       def add(controller)
         @controllers << controller
+      end
+
+      private
+      def define_lets(edge, lets_handler)
+        lets_handler.let_blocks.each do |title, block|
+          edge.define_singleton_method(title) do
+            @let_cache[title] ||= instance_eval(&block)
+          end
+        end
       end
     end
   end

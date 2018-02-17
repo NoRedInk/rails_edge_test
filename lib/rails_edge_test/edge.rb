@@ -5,6 +5,11 @@ require 'action_controller/test_case'
 module RailsEdgeTest
   Edge = Struct.new(:description, :action, :controller_class) do
 
+    def initialize(*args)
+      super
+      @let_cache = {}
+    end
+
     delegate :session, to: :request
 
     def request
@@ -54,15 +59,6 @@ module RailsEdgeTest
       ELM
 
       write_file(filepath, module_name+'.elm', data)
-    end
-
-    def __define_lets(lets_handler)
-      @let_cache = {}
-      lets_handler.let_blocks.each do |title, block|
-        define_singleton_method(title) do
-          @let_cache[title] ||= instance_eval(&block)
-        end
-      end
     end
 
     private
