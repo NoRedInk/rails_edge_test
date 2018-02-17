@@ -6,27 +6,29 @@ module RailsEdgeTest
       Dsl.add(controller)
     end
 
-    def self.reset!
-      @controllers = []
-    end
-
-    def self.execute!
-      count = 0
-      @controllers.each do |controller|
-        controller.__actions.each do |action|
-          action.__edges.each do |edge, block|
-            edge.__define_lets(action.__lets_handler)
-            edge.instance_exec(&block)
-            count += 1
-          end
-        end
+    class << self
+      def reset!
+        @controllers = []
       end
 
-      count
-    end
+      def execute!
+        count = 0
+        @controllers.each do |controller|
+          controller.__actions.each do |action|
+            action.__edges.each do |edge, block|
+              edge.__define_lets(action.__lets_handler)
+              edge.instance_exec(&block)
+              count += 1
+            end
+          end
+        end
 
-    def self.add(controller)
-      @controllers << controller
+        count
+      end
+
+      def add(controller)
+        @controllers << controller
+      end
     end
   end
 end
