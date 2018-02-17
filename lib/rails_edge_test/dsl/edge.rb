@@ -37,6 +37,7 @@ module RailsEdgeTest::Dsl
 
     def produce_elm_file(module_name, ivar: nil)
       json = produce_json(ivar: ivar)
+      json = json.gsub("\\", "\\\\\\\\") # unbelievably, this replaces \ with \\
 
       filepath = File.join(
         RailsEdgeTest.configuration.elm_path,

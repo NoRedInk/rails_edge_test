@@ -7,7 +7,7 @@ module Namespace
     end
 
     def escape
-      render json: {escape: 'this\\string'}
+      render json: {escape: 'this "string" please'}
     end
 
     def ivar
@@ -130,7 +130,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         json : String
         json =
             """
-        {"escape":"this\\\\string"}
+        {"escape":"this \\\\"string\\\\" please"}
             """
       ELM
     end
