@@ -13,14 +13,23 @@ module RailsEdgeTest
 
       def execute!
         count = 0
-        @controllers.each do |controller|
-          controller.__actions.each do |action|
-            action.__edges.each do |edge, block|
-              define_lets(edge, action.__lets_handler)
-              edge.instance_exec(&block)
-              count += 1
+
+        RailsEdgeTest.configuration.wrap_suite_execution do
+
+          @controllers.each do |controller|
+            controller.__actions.each do |action|
+              action.__edges.each do |edge, block|
+
+                RailsEdgeTest.configuration.wrap_edge_execution do
+                  define_lets(edge, action.__lets_handler)
+                  edge.instance_exec(&block)
+                  count += 1
+                end
+
+              end
             end
           end
+
         end
 
         count

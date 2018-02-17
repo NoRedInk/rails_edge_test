@@ -38,7 +38,7 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "elm" do
+            edge "blast off" do
               starships
             end
           end
@@ -52,6 +52,178 @@ RSpec.describe RailsEdgeTest::Configuration do
       RailsEdgeTest::Dsl.execute!
 
       expect(meant_to).to eq 'fly!'
+    end
+  end
+
+  describe "#before_suite(&block)" do
+    it "executes the before_suite blocks before the edges" do
+      count_down = 3
+
+      RailsEdgeTest.configure do |config|
+        config.before_suite { count_down -= 1 }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_suite { count_down -= 1 }
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          action :simple do
+            edge "t minus" do
+              count_down -= 1
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(count_down).to eq 0
+    end
+  end
+
+  describe "#before_each(&block)" do
+    it "executes the before_each blocks before each edge" do
+      count_down = 7
+
+      RailsEdgeTest.configure do |config|
+        config.before_each { count_down -= 1 }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_each { count_down -= 1 }
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          action :simple do
+            edge "first" do
+              count_down -= 1
+            end
+          end
+
+          action :simple do
+            edge "second" do
+              count_down -= 1
+              count_down -= 1
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(count_down).to eq 0
+    end
+  end
+
+  describe "#after_each(&block)" do
+    it "executes the before_each blocks before each edge" do
+      count_down = 7
+
+      RailsEdgeTest.configure do |config|
+        config.after_each { count_down -= 1 }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.after_each { count_down -= 1 }
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          action :simple do
+            edge "first" do
+              count_down -= 1
+            end
+          end
+
+          action :simple do
+            edge "second" do
+              count_down -= 1
+              count_down -= 1
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(count_down).to eq 0
+    end
+  end
+
+  describe "before and after blocks" do
+    it "execute in the correct order" do
+      order = []
+
+      RailsEdgeTest.configure do |config|
+        config.after_each { order << :first_after_each }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.after_each { order << :second_after_each }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_each { order << :first_before_each }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_each { order << :second_before_each }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_suite { order << :first_before_suite }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.before_suite { order << :second_before_suite }
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          action :simple do
+            edge "first" do
+              order << :first_edge
+            end
+          end
+
+          action :simple do
+            edge "second" do
+              order << :second_edge
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(order).to eq [
+        :first_before_suite,
+        :second_before_suite,
+
+        :first_before_each,
+        :second_before_each,
+        :first_edge,
+        :first_after_each,
+        :second_after_each,
+
+        :first_before_each,
+        :second_before_each,
+        :second_edge,
+        :first_after_each,
+        :second_after_each,
+      ]
+
     end
   end
 end
