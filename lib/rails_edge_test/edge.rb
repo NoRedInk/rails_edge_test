@@ -30,8 +30,8 @@ module RailsEdgeTest
       @response = controller.dispatch(action, request)
     end
 
-    def produce_elm_file(module_name)
-      json = produce_json
+    def produce_elm_file(module_name, ivar: nil)
+      json = produce_json(ivar: ivar)
 
       filepath = File.join(
         RailsEdgeTest.configuration.elm_path,

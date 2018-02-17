@@ -105,5 +105,63 @@ RSpec.describe RailsEdgeTest::Edge do
             """
       ELM
     end
+
+    it "properly escapes the json string" do
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :escape do
+            edge "elm" do
+              perform_get
+              produce_elm_file('MyResponse')
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      elm = File.open(expected_filepath, 'r').read(nil)
+      expect(elm).to eq(<<~ELM)
+        module Edge.Namespace.EdgeController.MyResponse exposing (json)
+
+
+        json : String
+        json =
+            """
+        {"escape":"this\\\\string"}
+            """
+      ELM
+    end
+
+    it "can grab the json out of an instance variable" do
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :ivar do
+            edge "elm" do
+              perform_get
+              produce_elm_file('MyResponse', ivar: :@page_data)
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      elm = File.open(expected_filepath, 'r').read(nil)
+      expect(elm).to eq(<<~ELM)
+        module Edge.Namespace.EdgeController.MyResponse exposing (json)
+
+
+        json : String
+        json =
+            """
+        {"to":"be embedded"}
+            """
+      ELM
+    end
   end
 end
