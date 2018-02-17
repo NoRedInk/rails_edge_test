@@ -6,7 +6,7 @@ class LetHandlerController < ActionController::Base
   end
 end
 
-RSpec.describe RailsEdgeTest::LetHandler do
+RSpec.describe RailsEdgeTest::Dsl::LetHandler do
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'let_handler#simple'

@@ -2,7 +2,7 @@ require 'action_dispatch'
 require 'action_controller'
 require 'action_controller/test_case'
 
-module RailsEdgeTest
+module RailsEdgeTest::Dsl
   Edge = Struct.new(:description, :action, :controller_class) do
 
     def initialize(*args)

@@ -17,7 +17,7 @@ module Namespace
   end
 end
 
-RSpec.describe RailsEdgeTest::Edge do
+RSpec.describe RailsEdgeTest::Dsl::Edge do
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'namespace/edge#simple'
@@ -44,7 +44,7 @@ RSpec.describe RailsEdgeTest::Edge do
   end
 
 
-  let(:elm_path) { File.expand_path('../tmp', File.dirname(__FILE__)) }
+  let(:elm_path) { File.expand_path('../../tmp', File.dirname(__FILE__)) }
 
   describe "#produce_elm_file(module_name, ivar: nil)" do
     let(:expected_filepath) {

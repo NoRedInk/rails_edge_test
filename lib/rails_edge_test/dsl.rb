@@ -1,7 +1,7 @@
 module RailsEdgeTest
   module Dsl
     def controller(controller_class, &block)
-      controller = RailsEdgeTest::Controller.new(controller_class)
+      controller = RailsEdgeTest::Dsl::Controller.new(controller_class)
       controller.instance_exec(&block)
       Dsl.add(controller)
     end

@@ -1,9 +1,9 @@
 require "rails_edge_test/version"
 require "rails_edge_test/dsl"
-require "rails_edge_test/controller"
-require "rails_edge_test/action"
-require "rails_edge_test/edge"
-require "rails_edge_test/let_handler"
+require "rails_edge_test/dsl/controller"
+require "rails_edge_test/dsl/action"
+require "rails_edge_test/dsl/edge"
+require "rails_edge_test/dsl/let_handler"
 require "rails_edge_test/configuration"
 require "rails_edge_test/railtie"
 

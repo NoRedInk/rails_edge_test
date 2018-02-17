@@ -1,13 +1,13 @@
-module RailsEdgeTest
+module RailsEdgeTest::Dsl
   Action = Struct.new(:name, :controller_class) do
     def initialize(*args)
       super
       @edges = {}
-      @lets_handler = RailsEdgeTest::LetHandler.new
+      @lets_handler = LetHandler.new
     end
 
     def edge(description, &block)
-      edge = RailsEdgeTest::Edge.new(description, name, controller_class)
+      edge = Edge.new(description, name, controller_class)
       @edges[edge] = block
     end
 

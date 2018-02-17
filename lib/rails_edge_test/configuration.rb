@@ -14,7 +14,7 @@ module RailsEdgeTest
     # access from within an `edge` block.
     # @param [Module] mod - a module to be included into all `edge` blocks
     def include(mod)
-      Edge.include mod
+      Dsl::Edge.include mod
     end
 
     # Provide a block to be executed once before running any `edge` blocks

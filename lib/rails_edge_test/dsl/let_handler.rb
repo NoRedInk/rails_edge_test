@@ -1,4 +1,4 @@
-module RailsEdgeTest
+module RailsEdgeTest::Dsl
   class LetHandler
     attr_reader :let_blocks
 
