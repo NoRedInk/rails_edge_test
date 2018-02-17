@@ -7,6 +7,7 @@ require "rails_edge_test/dsl/let_handler"
 require "rails_edge_test/configuration"
 require "rails_edge_test/printers/boring"
 require "rails_edge_test/printers/silent"
+require "rails_edge_test/printers/tree"
 require "rails_edge_test/railtie"
 
 module RailsEdgeTest
