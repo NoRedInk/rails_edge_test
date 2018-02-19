@@ -5,7 +5,7 @@ namespace :rails_edge_test do
   desc "run all _edge.rb files in your specified edge directory"
   task :generate_files => :environment do
     unless Rails.env.test?
-      puts "ERROR: Attempt to run in #{Rails.env} environment failed. Must be run in test environment."
+      system("rake rails_edge_test:generate_files RAILS_ENV=test")
       exit
     end
 
