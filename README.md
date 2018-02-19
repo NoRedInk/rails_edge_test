@@ -1,10 +1,13 @@
 # RailsEdgeTest
 
-TODO: Describe this gem.
+Do you have front-end tests that require large json blobs? Do you use Rails for your backend? Then, you can use this gem to have Rails generate your json blobs programmatically!
+
+Use the rails_edge_test DSL (modeled after RSpec) to define your json files.
+
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile, and make sure it's available to your test environment:
 
 ```ruby
 gem 'rails_edge_test'
@@ -20,7 +23,83 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+For example:
+
+```ruby
+# edge/rails_controller_edge.rb
+
+include RailsEdgeTest::Dsl
+
+controller HomeController do
+  action :show do
+    let(:user) { create :user }
+    
+    edge "first time user" do
+      user
+      perform_get
+      
+      # generates Edge.HomeController.Show.FirstTimeUser with `json` function
+      produce_elm_file('FirstTimeUser') 
+    end
+    
+    edge "returning user" do
+      user
+      create :post, user: user
+      perform_get
+      
+      # generates Edge.HomeController.Show.ReturningUser with `json` function
+      produce_elm_file('ReturningUser') 
+    end
+  end
+end
+```
+
+Edge specifications, like the above, should be put in subfolders of `/edge` and must be named `*_edge.rb`.
+
+## Generating files
+
+When you want to generate your edge json files, run this rake task:
+
+`RAILS_ENV=test rake rails_edge_test:generate_files`
+
+## Some helpful setup
+
+You may want to use some or all of this setup:
+
+```ruby
+# config/initializers/rails_edge_test.rb
+
+if defined?(RailsEdgeTest)
+  RailsEdgeTest.configure do |config|
+    config.edge_root_path = Rails.root.join('edge', 'spec')
+    config.elm_path = Rails.root.join('ui', 'tests')
+    config.include(FactoryGirl::Syntax::Methods)
+
+    config.before_suite { DatabaseCleaner.strategy = :transaction }
+    config.before_each { DatabaseCleaner.start }
+    config.after_each { DatabaseCleaner.clean }
+
+    config.printer = RailsEdgeTest::Printers::Tree
+  end
+end
+```
+
+```ruby
+# edge/edge_helper.rb
+
+include RailsEdgeTest::Dsl
+
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each {|f| require f}
+```
+
+```ruby
+# edge/<the name of your file>_edge.rb
+
+require Rails.root.join('edge', 'spec', 'edge_helper')
+
+#...
+```
+
 
 ## Development
 
