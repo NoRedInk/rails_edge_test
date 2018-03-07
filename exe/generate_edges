@@ -3,32 +3,7 @@
 require 'open3'
 require 'rails_edge_test'
 
-ENV["RAILS_ENV"]="test"
-rails_path = File.expand_path("../config/application", ENV["BUNDLE_GEMFILE"])
-require rails_path
+rails_root = File.expand_path("../", ENV["BUNDLE_GEMFILE"])
 
-Rails.application.require_environment!
-
-unless Rails.env.test?
-  puts "Unable to set environment to test."
-  exit
-end
-
-RailsEdgeTest::Dsl.reset!
-
-glob_path = '**/*_edge.rb'
-
-if ARGV.length > 0
-  glob_path = ARGV.shift
-end
-
-glob = File.join(
-  RailsEdgeTest.configuration.edge_root_path,
-  glob_path
-)
-
-Dir.glob(glob).each do |file|
-  load file
-end
-
-RailsEdgeTest::Dsl.execute!
+RailsEdgeTest::Runner.load_rails_environment!(rails_root)
+RailsEdgeTest::Runner.go!(ARGV)
