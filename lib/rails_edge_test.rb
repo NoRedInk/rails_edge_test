@@ -8,7 +8,6 @@ require "rails_edge_test/configuration"
 require "rails_edge_test/printers/boring"
 require "rails_edge_test/printers/silent"
 require "rails_edge_test/printers/tree"
-require "rails_edge_test/railtie"
 
 module RailsEdgeTest
   module_function
