@@ -37,7 +37,7 @@ Or install it yourself as:
 For example:
 
 ```ruby
-# edge/rails_controller_edge.rb
+# spec/edge/rails_controller_edge.rb
 
 include RailsEdgeTest::Dsl
 
@@ -69,9 +69,12 @@ Edge specifications, like the above, should be put in subfolders of `/edge` and 
 
 ## Generating files
 
-When you want to generate your edge json files, run this rake task:
+When you want to generate your edge json files, run this:
 
-`RAILS_ENV=test rake rails_edge_test:generate_files`
+`bundle exec generate_edges`
+
+You can also pass in a file path relative to the edge root path (usually spec/edge):
+`bundle exec generate_edges rails_controller_edge.rb`
 
 ## Some helpful setup
 

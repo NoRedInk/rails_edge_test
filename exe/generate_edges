@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'open3'
+require 'rails_edge_test'
+
+rails_root = File.expand_path("../", ENV["BUNDLE_GEMFILE"])
+
+RailsEdgeTest::Runner.load_rails_environment!(rails_root)
+RailsEdgeTest::Runner.go!(ARGV)
