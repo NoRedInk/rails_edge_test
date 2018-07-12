@@ -27,6 +27,7 @@ module RailsEdgeTest
                 printer.begin_edge(edge)
 
                 RailsEdgeTest.configuration.wrap_edge_execution do
+                  define_lets(edge, controller.__let_handler)
                   define_lets(edge, action.__let_handler)
                   edge.instance_exec(&block)
                 end

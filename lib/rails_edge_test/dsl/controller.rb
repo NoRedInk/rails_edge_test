@@ -3,6 +3,7 @@ module RailsEdgeTest::Dsl
     def initialize(*args)
       super
       @actions = []
+      @let_handler = LetHandler.new
     end
 
     def action(name, &block)
@@ -11,8 +12,16 @@ module RailsEdgeTest::Dsl
       @actions << new_action
     end
 
+    def let(title, &block)
+      @let_handler.add_definition(title, &block)
+    end
+
     def __actions
       @actions
+    end
+
+    def __let_handler
+      @let_handler
     end
   end
 end
