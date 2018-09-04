@@ -74,6 +74,9 @@ module RailsEdgeTest::Dsl
       ActiveSupport::JSON::Encoding.escape_html_entities_in_json = false
       if ivar
         value = controller.send(:instance_variable_get, ivar)
+        JSON.pretty_unparse(value.as_json)
+      elsif response[1]['Content-Type']&.starts_with?('application/json')
+        value = JSON.parse(response[2].body)
         JSON.pretty_unparse(value)
       else
         response[2].body
