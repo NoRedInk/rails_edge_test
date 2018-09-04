@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 module Namespace
+  class MyObj
+    def as_json
+      { isMyObj: true }
+    end
+  end
+
   class EdgeController < ActionController::Base
     def simple
       render json: {my: 'response'}
@@ -14,6 +20,11 @@ module Namespace
       @page_data = {to: 'be embedded'}
       head :ok
     end
+
+    def ivar_requires_as_json
+      @page_data = { field: MyObj.new }
+      head :ok
+    end
   end
 end
 
@@ -23,6 +34,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       get 'test/simple' => 'namespace/edge#simple'
       get 'test/escape' => 'namespace/edge#escape'
       get 'test/ivar' => 'namespace/edge#ivar'
+      get 'test/ivar_requires_as_json' => 'namespace/edge#ivar_requires_as_json'
     end
   end
   after(:all) do
@@ -165,6 +177,39 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
             """
         {
           "to": "be embedded"
+        }
+            """
+      ELM
+    end
+
+    it "can correctly renders ivars containing objects that define as_json " do
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :ivar_requires_as_json do
+            edge "elm" do
+              perform_get
+              produce_elm_file('MyResponse', ivar: :@page_data)
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      elm = File.open(expected_filepath, 'r').read(nil)
+      expect(elm).to eq(<<~ELM)
+        module Edge.Namespace.EdgeController.MyResponse exposing (json)
+
+
+        json : String
+        json =
+            """
+        {
+          "field": {
+            "isMyObj": true
+          }
         }
             """
       ELM
