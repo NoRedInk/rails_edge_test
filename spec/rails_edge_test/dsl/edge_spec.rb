@@ -101,7 +101,9 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         json : String
         json =
             """
-        {"my":"response"}
+        {
+          "my": "response"
+        }
             """
       ELM
     end
@@ -130,7 +132,9 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         json : String
         json =
             """
-        {"escape":"this \\\\"string\\\\" please"}
+        {
+          "escape": "this \\\\"string\\\\" please"
+        }
             """
       ELM
     end

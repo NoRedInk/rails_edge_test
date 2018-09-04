@@ -36,7 +36,9 @@ RSpec.describe RailsEdgeTest::Runner do
       json : String
       json =
           """
-      {"example":"data"}
+      {
+        "example": "data"
+      }
           """
     ELM
   end
@@ -58,7 +60,9 @@ RSpec.describe RailsEdgeTest::Runner do
       json : String
       json =
           """
-      {"example":"data"}
+      {
+        "example": "data"
+      }
           """
     ELM
   end
