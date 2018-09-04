@@ -1,5 +1,10 @@
 # The Changelog
 
+## Version 0.6.0: Sep 4, 2018
+
+- Bug fixes for generated JSON is now formatted to aid in comparing versions of generated fixtures
+
+
 ## Version 0.5.0: Sep 4, 2018
 
 - Generated JSON is now formatted to aid in comparing versions of generated fixtures
