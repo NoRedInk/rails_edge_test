@@ -1,5 +1,10 @@
 # The Changelog
 
+## Version 0.5.0: Sep 4, 2018
+
+- Generated JSON is now formatted to aid in comparing versions of generated fixtures
+
+
 ## Version 0.4.0: Aug 16, 2018
 
 - `let` bindings can now be set at the controller level and overridden or used in child actions.
