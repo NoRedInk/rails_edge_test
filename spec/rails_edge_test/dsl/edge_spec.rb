@@ -159,7 +159,9 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         json : String
         json =
             """
-        {"to":"be embedded"}
+        {
+          "to": "be embedded"
+        }
             """
       ELM
     end
