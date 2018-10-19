@@ -15,12 +15,17 @@ module RailsEdgeTest
         glob_path = args.shift
       end
 
-      glob = File.join(
+      glob_with_root_path = File.join(
         RailsEdgeTest.configuration.edge_root_path,
         glob_path
       )
 
-      Dir.glob(glob).each do |file|
+      # load files both at the root path and edge_root_path
+      Dir.glob(glob_path).each do |file|
+        load file
+      end
+
+      Dir.glob(glob_with_root_path).each do |file|
         load file
       end
 

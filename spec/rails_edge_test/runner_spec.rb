@@ -47,7 +47,33 @@ RSpec.describe RailsEdgeTest::Runner do
     expect(File.exists? expected_home_filepath).to be false
     expect(File.exists? expected_other_filepath).to be false
 
+    # Provide filepath relative to edge_root_path
     RailsEdgeTest::Runner.go!(["another_edge.rb"])
+
+    expect(File.exists? expected_home_filepath).to be false
+    expect(File.exists? expected_other_filepath).to be true
+
+    elm = File.open(expected_other_filepath, 'r').read(nil)
+    expect(elm).to eq(<<~ELM)
+      module Edge.ApplicationController.Another exposing (json)
+
+
+      json : String
+      json =
+          """
+      {
+        "example": "data"
+      }
+          """
+    ELM
+  end
+
+  it "allows full paths for creating files" do
+    expect(File.exists? expected_home_filepath).to be false
+    expect(File.exists? expected_other_filepath).to be false
+
+    # Provide full filepath relative to root
+    RailsEdgeTest::Runner.go!(["spec/support/test_app/edge/another_edge.rb"])
 
     expect(File.exists? expected_home_filepath).to be false
     expect(File.exists? expected_other_filepath).to be true
