@@ -3,7 +3,23 @@
 require 'open3'
 require 'rails_edge_test'
 
-rails_root = File.expand_path("../", ENV["BUNDLE_GEMFILE"])
+# Walk up recursively the filesystem until we can find a folder
+# containing the Gemfile. Then we can use that folder as the starting
+# point to look for the rails files that we need.
+def find_gemfile_dir(path)
+  if File.file?(File.join(path, 'Gemfile'))
+    path
+  else
+    new_path = File.expand_path('..', path)
 
-RailsEdgeTest::Runner.load_rails_environment!(rails_root)
+    if path == new_path
+      raise 'Could not find directory with Gemfile'
+    else
+      find_gemfile_dir(new_path)
+    end
+  end
+end
+
+gemfile_dir = find_gemfile_dir(Dir.pwd)
+RailsEdgeTest::Runner.load_rails_environment!(gemfile_dir)
 RailsEdgeTest::Runner.go!(ARGV)
