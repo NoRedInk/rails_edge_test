@@ -69,11 +69,16 @@ Edge specifications, like the above, should be put in subfolders of `/edge` and 
 
 ## Generating files
 
-When you want to generate your edge json files, run this:
+When you want to generate all your edge json files, run this:
 
 `bundle exec generate_edges`
 
-You can also pass in a file path relative to the edge root path (usually spec/edge):
+When you can also specify a specific file:
+
+`bundle exec generate_edges spec/edge/rails_controller_edge.rb`
+
+You can also pass in a file path relative to the edge root path (usually `spec/edge`):
+
 `bundle exec generate_edges rails_controller_edge.rb`
 
 ## Some helpful setup
