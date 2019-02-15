@@ -13,7 +13,7 @@ module RailsEdgeTest::Dsl
     delegate :session, to: :request
 
     def request
-      @request ||= ActionController::TestRequest.new
+      @request ||= ActionController::TestRequest.create(controller_class)
     end
 
     def controller
@@ -29,10 +29,16 @@ module RailsEdgeTest::Dsl
         ::Rails.application.routes,
         controller_class.controller_path,
         action.to_s,
-        parameters
+        parameters.stringify_keys!,
+        '',
+        ''
       )
 
-      @response = controller.dispatch(action, request)
+      response = ActionDispatch::Response.new.tap do |res|
+        res.request = request
+      end
+
+      @response = controller.dispatch(action, request, response)
     end
 
     def produce_elm_file(module_name, ivar: nil)
@@ -67,6 +73,7 @@ module RailsEdgeTest::Dsl
       unless response
         fail "Must perform a request (for example `perform_get`) before attempting to produce a json file."
       end
+
       if response.is_a?(Array) && response[0] >= 300
         fail "Request did not result in a successful (2xx) response!"
       end
