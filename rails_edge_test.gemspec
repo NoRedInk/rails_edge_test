@@ -24,8 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "actionpack", "~> 5.2"
 
   spec.add_development_dependency "rails", "~> 5.2"
-  spec.add_development_dependency "byebug"
-  spec.add_development_dependency "sqlite3", "~> 1.4"
+  spec.add_development_dependency "sqlite3", "~> 1.3.6"
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.8"
