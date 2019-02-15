@@ -1,5 +1,8 @@
 # The Changelog
 
+## Version 1.0.0: Feb 15, 2019
+- Deprecate Rails 4, add support for Rails 5
+
 ## Version 0.7.0: Dec 5, 2018
 
 - We can now pass a real path to the generate_edges command
