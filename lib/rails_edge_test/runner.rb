@@ -9,23 +9,17 @@ module RailsEdgeTest
 
       RailsEdgeTest::Dsl.reset!
 
-      glob_path = '**/*_edge.rb'
+      paths_to_load =
+        if args.any?
+          args
+        else
+          File.join(
+            RailsEdgeTest.configuration.edge_root_path,
+            '**/*_edge.rb'
+          )
+        end
 
-      if args.length > 0
-        glob_path = args.shift
-      end
-
-      glob_with_root_path = File.join(
-        RailsEdgeTest.configuration.edge_root_path,
-        glob_path
-      )
-
-      # load files both at the root path and edge_root_path
-      Dir.glob(glob_path).each do |file|
-        load file
-      end
-
-      Dir.glob(glob_with_root_path).each do |file|
+      Dir.glob(paths_to_load).each do |file|
         load file
       end
 
