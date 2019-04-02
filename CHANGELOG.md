@@ -1,5 +1,9 @@
 # The Changelog
 
+## Version 0.8.0: April 2, 2019
+
+- Edges passed in on command line must have the whole path. We _only_ look for edges by default in the `edge_root_path`, not also in the root path.
+
 ## Version 0.7.0: Dec 5, 2018
 
 - We can now pass a real path to the generate_edges command
