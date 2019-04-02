@@ -48,7 +48,7 @@ RSpec.describe RailsEdgeTest::Runner do
     expect(File.exists? expected_other_filepath).to be false
 
     # Provide filepath relative to edge_root_path
-    RailsEdgeTest::Runner.go!(["another_edge.rb"])
+    RailsEdgeTest::Runner.go!(["spec/support/test_app/edge/another_edge.rb"])
 
     expect(File.exists? expected_home_filepath).to be false
     expect(File.exists? expected_other_filepath).to be true
