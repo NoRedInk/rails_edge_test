@@ -19,7 +19,7 @@ module RailsEdgeTest
           )
         end
 
-      Dir.glob(paths_to_load).each do |file|
+      Dir.glob(paths_to_load).sort.each do |file|
         load file
       end
 
