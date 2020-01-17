@@ -1,6 +1,8 @@
 # The Changelog
 
-
+## Version 1.1.1: January 17, 2019
+- test fixes (#25)
+- more deterministic edge generation (#26)
 
 ## Version 1.1.0: April 2, 2019
 

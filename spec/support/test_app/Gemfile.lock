@@ -1,7 +1,7 @@
 PATH
   remote: ../../..
   specs:
-    rails_edge_test (1.1.0)
+    rails_edge_test (1.1.1)
       actionpack (~> 5.2)
 
 GEM
