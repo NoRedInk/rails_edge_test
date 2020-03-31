@@ -7,7 +7,7 @@ module RailsEdgeTest::Dsl
     end
 
     def action(name, &block)
-      new_action = Action.new(name, controller_class)
+      new_action = Action.new(name, self)
       new_action.instance_exec(&block)
       @actions << new_action
     end

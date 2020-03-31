@@ -50,6 +50,7 @@ module RailsEdgeTest
       end
 
       private
+
       def define_lets(edge, lets_handler)
         lets_handler.let_blocks.each do |title, block|
           edge.define_singleton_method(title) do
