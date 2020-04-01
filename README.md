@@ -130,10 +130,10 @@ To release a new version, follow the instructions in [PUBLISHING.md](PUBLISHING.
 
 ### Nix support
 
-In order to get Nix working you need to have [direnv](https://github.com/direnv/direnv) installed. You can then run from the top level folder:
+In order to get Nix working you need to have [direnv](https://github.com/direnv/direnv) installed. You will have to `direnv allow` to load the current `.envrc`. You can then run from the top level folder:
 
 ```
-cd nix && bundix -m --ruby=ruby_2_5 && cd .. && direnv reload
+./nix/update-gemset.sh
 ```
 
 ## Contributing
