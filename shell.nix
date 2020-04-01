@@ -12,15 +12,5 @@ let
 in with nixpkgs;
 stdenv.mkDerivation {
   name = "rails_edge_test";
-  buildInputs = [
-    # deps
-    pkgs.zlib
-    pkgs.sqlite
-    pkgs.libiconv
-
-    # ruby and gems
-    pkgs.bundix
-    gems
-    gems.wrappedRuby
-  ];
+  buildInputs = [ gems gems.wrappedRuby ];
 }
