@@ -128,6 +128,13 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 To release a new version, follow the instructions in [PUBLISHING.md](PUBLISHING.md).
 
+### Nix support
+
+In order to get Nix working you need to have [direnv](https://github.com/direnv/direnv) installed. You will have to `direnv allow` to load the current `.envrc`. You can then run from the top level folder:
+
+```
+./nix/update-gemset.sh
+```
 
 ## Contributing
 

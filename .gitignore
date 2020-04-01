@@ -15,3 +15,6 @@
 
 # RubyMine
 /.idea
+
+# nixified bundle
+/nix/vendor
