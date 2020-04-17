@@ -6,7 +6,7 @@ require 'rails_edge_test/version'
 Gem::Specification.new do |spec|
   spec.name          = "rails_edge_test"
   spec.version       = RailsEdgeTest::VERSION
-  spec.authors       = ["Joshua Leven"]
+  spec.authors       = ["Joshua Leven", "Ju Liu"]
   spec.email         = ["josh@noredink.com"]
 
   spec.summary       = %q{Generate json for front-end testing using your rails backend.}

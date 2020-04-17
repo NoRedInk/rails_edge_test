@@ -1,5 +1,9 @@
 # The Changelog
 
+## Version 1.2.0: April 17, 2020
+- nix developer setup (#28, thanks @arkham!)
+- support scoped defined methods (with `def`) (#29, thanks @arkham!)
+
 ## Version 1.1.1: January 17, 2019
 - test fixes (#25)
 - more deterministic edge generation (#26)
