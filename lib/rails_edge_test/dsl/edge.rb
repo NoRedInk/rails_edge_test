@@ -3,19 +3,23 @@ require 'action_controller'
 require 'action_controller/test_case'
 
 module RailsEdgeTest::Dsl
-  Edge = Struct.new(:description, :action, :controller_class) do
+  Edge = Struct.new(:description, :action) do
 
     def initialize(*args)
       super
       @let_cache = {}
     end
 
+    delegate :controller_class, to: :action
     delegate :session, to: :request
 
     def request
       @request ||= ActionController::TestRequest.create(controller_class)
     end
 
+    # In the context of the edge, we want `controller` to be the rails controller
+    # instead of our own RailsEdgeTest::Dsl::Controller. In this way the user can
+    # directly access the rails controller within their edge.
     def controller
       @controller ||= controller_class.new
     end
@@ -28,7 +32,7 @@ module RailsEdgeTest::Dsl
       request.assign_parameters(
         ::Rails.application.routes,
         controller_class.controller_path,
-        action.to_s,
+        action.name.to_s,
         parameters.stringify_keys!,
         '',
         ''
@@ -38,7 +42,7 @@ module RailsEdgeTest::Dsl
         res.request = request
       end
 
-      @response = controller.dispatch(action, request, response)
+      @response = controller.dispatch(action.name, request, response)
     end
 
     def produce_elm_file(module_name, ivar: nil)
@@ -69,6 +73,7 @@ module RailsEdgeTest::Dsl
     end
 
     private
+
     def produce_json(ivar: nil)
       unless response
         fail "Must perform a request (for example `perform_get`) before attempting to produce a json file."
@@ -99,6 +104,21 @@ module RailsEdgeTest::Dsl
         f.write(data)
         f.flush
       end
+    end
+
+    # support calling methods defined in action
+    def method_missing(method_name, *arguments, &block)
+      if action.respond_to?(method_name)
+        action.public_send(method_name, *arguments, &block)
+      else
+        super
+      end
+    end
+
+    # always define respond_to_missing? when defining method_missing:
+    # https://thoughtbot.com/blog/always-define-respond-to-missing-when-overriding
+    def respond_to_missing?(method_name, include_private = false)
+      action.respond_to?(method_name) || super
     end
   end
 end

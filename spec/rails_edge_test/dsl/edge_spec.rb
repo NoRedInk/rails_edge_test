@@ -26,7 +26,11 @@ module Namespace
       head :ok
     end
   end
+
+  class EdgeController2 < EdgeController
+  end
 end
+
 
 RSpec.describe RailsEdgeTest::Dsl::Edge do
   before(:all) do
@@ -213,6 +217,281 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         }
             """
       ELM
+    end
+  end
+
+  describe "a method defined within an action block" do
+    it "is callable within an edge block inside that action block" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :simple do
+            def christina
+              'genie in a bottle'
+            end
+
+            edge "call method" do
+              test_value = christina
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'genie in a bottle'
+    end
+
+    it "is callable with arguments and optional block" do
+      test_value = nil
+      block_test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :simple do
+            def christina(what, &block)
+              block.call(what) if block
+              "#{what} in a bottle"
+            end
+
+            edge "call method" do
+              # verify it works without a block
+              christina('genie')
+
+              # verify it works with a block
+              test_value = christina('genie') do |name|
+                block_test_value = name
+              end
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'genie in a bottle'
+      expect(block_test_value).to eq 'genie'
+    end
+
+    it "is not callable within a different action block" do
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :simple do
+            def christina
+              'genie in a bottle'
+            end
+
+            edge "call method" do
+              christina
+            end
+          end
+          action :simple do
+            edge "invalid" do
+              christina
+            end
+          end
+        end
+      end
+
+      expect {
+        RailsEdgeTest::Dsl.execute!
+      }.to raise_error(NameError, /christina/)
+    end
+
+    it "is callable from a let block" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          action :simple do
+            def christina
+              'genie in the dark'
+            end
+
+            let(:gaga) { christina.gsub('genie', 'dance') }
+
+            edge "callable from let" do
+              test_value = gaga
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'dance in the dark'
+    end
+  end
+
+  describe "a method defined within a controller block" do
+    it "is callable within an edge block inside that controller block" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          def christina
+            'genie in a bottle'
+          end
+
+          action :simple do
+            edge "call method" do
+              test_value = christina
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'genie in a bottle'
+    end
+
+    it "allows to be called from multiple actions"  do
+      first_result = second_result = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          def christina
+            'genie in a bottle'
+          end
+
+          action :first do
+            edge "call method" do
+              first_result = christina
+            end
+          end
+
+          action :second do
+            edge "call method" do
+              second_result = christina
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(first_result).to eq 'genie in a bottle'
+      expect(second_result).to eq 'genie in a bottle'
+    end
+
+    it "allows to be overridden by a method defined in the action" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller LetHandlerController do
+          def christina
+            'genie in a bottle'
+          end
+
+          action :first do
+            def christina
+              'genie in a lamp'
+            end
+
+            edge "call let" do
+              test_value = christina
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'genie in a lamp'
+    end
+
+    it "allows let blocks inside an action to reference methods inside a controller" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::EdgeController do
+          def christina
+            'genie in a bottle'
+          end
+
+          action :first do
+            let(:christie) { christina + ' and a lamp' }
+
+            edge "call method" do
+              test_value = christie
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value).to eq 'genie in a bottle and a lamp'
+    end
+
+    describe 'scoping' do
+      it "can't be referenced across controllers" do
+        Module.new do
+          extend RailsEdgeTest::Dsl
+
+          controller Namespace::EdgeController do
+            def christina
+              'genie in a bottle'
+            end
+          end
+
+          controller Namespace::EdgeController2 do
+            action :first do
+              edge "call method" do
+                christina
+              end
+            end
+          end
+        end
+
+        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+      end
+
+      it "can't be referenced across actions" do
+        test_value = nil
+        Module.new do
+          extend RailsEdgeTest::Dsl
+
+          controller Namespace::EdgeController do
+            action :first do
+              def christina
+                'genie in a bottle'
+              end
+
+              edge "call method" do
+                test_value = christina
+              end
+            end
+
+            action :second do
+              edge "call method with failure" do
+                christina
+              end
+            end
+          end
+        end
+
+        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+        expect(test_value).to eq('genie in a bottle')
+      end
     end
   end
 end
