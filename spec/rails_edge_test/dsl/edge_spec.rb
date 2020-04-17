@@ -26,7 +26,11 @@ module Namespace
       head :ok
     end
   end
+
+  class EdgeController2 < EdgeController
+  end
 end
+
 
 RSpec.describe RailsEdgeTest::Dsl::Edge do
   before(:all) do
@@ -436,6 +440,58 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       RailsEdgeTest::Dsl.execute!
 
       expect(test_value).to eq 'genie in a bottle and a lamp'
+    end
+
+    describe 'scoping' do
+      it "can't be referenced across controllers" do
+        Module.new do
+          extend RailsEdgeTest::Dsl
+
+          controller Namespace::EdgeController do
+            def christina
+              'genie in a bottle'
+            end
+          end
+
+          controller Namespace::EdgeController2 do
+            action :first do
+              edge "call method" do
+                christina
+              end
+            end
+          end
+        end
+
+        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+      end
+
+      it "can't be referenced across actions" do
+        test_value = nil
+        Module.new do
+          extend RailsEdgeTest::Dsl
+
+          controller Namespace::EdgeController do
+            action :first do
+              def christina
+                'genie in a bottle'
+              end
+
+              edge "call method" do
+                test_value = christina
+              end
+            end
+
+            action :second do
+              edge "call method with failure" do
+                christina
+              end
+            end
+          end
+        end
+
+        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+        expect(test_value).to eq('genie in a bottle')
+      end
     end
   end
 end
