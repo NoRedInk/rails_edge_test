@@ -1,10 +1,16 @@
 # The Changelog
 
+## Version 1.2.1: April 17, 2020
+
+- fix delegate method not being defined
+
 ## Version 1.2.0: April 17, 2020
+
 - nix developer setup (#28, thanks @arkham!)
 - support scoped defined methods (with `def`) (#29, thanks @arkham!)
 
 ## Version 1.1.1: January 17, 2019
+
 - test fixes (#25)
 - more deterministic edge generation (#26)
 
@@ -28,16 +34,13 @@
 
 - Bug fixes for generated JSON is now formatted to aid in comparing versions of generated fixtures
 
-
 ## Version 0.5.0: Sep 4, 2018
 
 - Generated JSON is now formatted to aid in comparing versions of generated fixtures
 
-
 ## Version 0.4.0: Aug 16, 2018
 
 - `let` bindings can now be set at the controller level and overridden or used in child actions.
-
 
 ## Version 0.3.0: Mar 7, 2018
 
@@ -48,7 +51,6 @@
     ```
 
 - Replaced rake task with RailsEdgeTest::Runner
-
 
 ## Version 0.2.2: Feb 20, 2018
 

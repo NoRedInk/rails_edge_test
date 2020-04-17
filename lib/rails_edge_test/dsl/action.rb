@@ -6,8 +6,6 @@ module RailsEdgeTest::Dsl
       @let_handler = LetHandler.new
     end
 
-    delegate :controller_class, to: :controller
-
     def edge(description, &block)
       edge = Edge.new(description, self)
       @edges[edge] = block
@@ -27,6 +25,10 @@ module RailsEdgeTest::Dsl
 
     def __let_handler
       @let_handler
+    end
+
+    def controller_class
+      controller.controller_class
     end
 
     # support calling methods defined in controller
