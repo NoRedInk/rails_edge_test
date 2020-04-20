@@ -24,7 +24,46 @@ RSpec.describe RailsEdgeTest::Configuration do
 
 
   describe "#include(mod)" do
-    it "includes the mod in each edge" do
+    it "makes module callable from helper functions" do
+      meant_to = nil
+
+      nicki = Module.new do
+        define_method :starships do
+          meant_to = 'fly!'
+        end
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          def controller_starships
+            starships
+          end
+
+          action :simple do
+            def action_starships
+              starships
+            end
+
+            edge "blast off" do
+              controller_starships
+              action_starships
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.include(nicki)
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(meant_to).to eq 'fly!'
+    end
+
+    it "includes the module in each edge" do
       meant_to = nil
 
       nicki = Module.new do
