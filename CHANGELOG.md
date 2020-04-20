@@ -1,5 +1,8 @@
 # The Changelog
 
+## Version 1.2.2: April 20, 2020
+- config.include allows module functions to be available within controller helper methods
+
 ## Version 1.2.1: April 17, 2020
 
 - fix delegate method not being defined
