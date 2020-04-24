@@ -25,11 +25,11 @@ RSpec.describe RailsEdgeTest::Configuration do
 
   describe "#include(mod)" do
     it "makes module callable from helper functions" do
-      meant_to = nil
+      count = 0
 
-      nicki = Module.new do
-        define_method :starships do
-          meant_to = 'fly!'
+      increment_module = Module.new do
+        define_method :increment_count do
+          count = count + 1
         end
       end
 
@@ -37,30 +37,30 @@ RSpec.describe RailsEdgeTest::Configuration do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::ConfigurationController do
-          def controller_starships
-            starships
+          def controller_increment
+            increment_count
           end
 
           action :simple do
-            def action_starships
-              starships
+            def action_increment
+              increment_count
             end
 
-            edge "blast off" do
-              controller_starships
-              action_starships
+            edge "increment twice" do
+              controller_increment
+              action_increment
             end
           end
         end
       end
 
       RailsEdgeTest.configure do |config|
-        config.include(nicki)
+        config.include(increment_module)
       end
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(meant_to).to eq 'fly!'
+      expect(count).to eq 2
     end
 
     it "includes the module in each edge" do
