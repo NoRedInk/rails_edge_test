@@ -28,6 +28,10 @@ module RailsEdgeTest::Dsl
       @response
     end
 
+    def idems
+      @idems ||= []
+    end
+
     def perform_get(parameters = {})
       request.assign_parameters(
         ::Rails.application.routes,
@@ -43,6 +47,28 @@ module RailsEdgeTest::Dsl
       end
 
       @response = controller.dispatch(action.name, request, response)
+    end
+
+    def add_idempotence_rule(&rule)
+      idems << rule
+    end
+
+    def pin_value(path, value)
+      # Takes "(["key1", "key2"], pinnedValue)" and runs
+      # > json_data["key1"]["key2"] = pinnedValue
+      # It will error if the specified path doesn't already
+      # exist
+      # see https://stackoverflow.com/questions/14294751/how-to-set-nested-hash-in-ruby-dynamically for how this works
+      add_idempotence_rule do |json_data|
+        *keys, last = path
+        parent = keys.inject(json_data, :fetch)
+        if parent.has_key? last
+          parent[last] = value
+        else
+          raise KeyError, "key not found: \"#{last}\""
+        end
+        json_data
+      end
     end
 
     def produce_elm_file(module_name, ivar: nil)
@@ -86,13 +112,18 @@ module RailsEdgeTest::Dsl
       ActiveSupport::JSON::Encoding.escape_html_entities_in_json = false
       if ivar
         value = controller.send(:instance_variable_get, ivar)
-        JSON.pretty_unparse(value.as_json)
+        sanitize_json(value.as_json)
       elsif response[1]['Content-Type']&.starts_with?('application/json')
         value = JSON.parse(response[2].body)
-        JSON.pretty_unparse(value)
+        sanitize_json(value)
       else
         response[2].body
       end
+    end
+
+    def sanitize_json(json_data)
+      sanitized = idems.reduce(json_data) { |jd, idem| idem.call jd }
+      JSON.pretty_unparse(sanitized)
     end
 
     def write_file(filepath, filename, data)
