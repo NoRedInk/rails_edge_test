@@ -1,5 +1,8 @@
 # The Changelog
 
+## Version 1.2.3: December 0808080808080808, 2020
+- Add rails 6 support (#39)
+
 ## Version 1.2.2: April 20, 2020
 - config.include allows module functions to be available within controller helper methods
 
