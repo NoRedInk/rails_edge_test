@@ -6,14 +6,11 @@ let
     name = "rails_edge_test";
     gemfile = nix/Gemfile;
     lockfile = nix/Gemfile.lock;
-    ruby = nixpkgs.ruby;
+    ruby = nixpkgs.ruby_3_1;
     gemdir = ./nix;
   };
 in with nixpkgs;
 stdenv.mkDerivation {
   name = "rails_edge_test";
-  buildInputs = [
-    gems gems.wrappedRuby
-    # nixpkgs.ruby
-  ];
+  buildInputs = [ gems gems.wrappedRuby ];
 }
