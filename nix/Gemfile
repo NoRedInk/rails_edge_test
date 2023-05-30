@@ -2,10 +2,10 @@
 # since bundix doesn't support reading the gemspec itself.
 source 'https://rubygems.org'
 
-gem 'actionpack', '~> 6.1'
+gem 'actionpack', '~> 7.0'
 
 group :development do
-  gem 'rails', '~> 6.1'
+  gem 'rails', '~> 7.0'
   gem 'sqlite3', '~> 1.6.3'
   gem 'rake', '~> 13.0'
   gem 'rspec', '~> 3.12'
