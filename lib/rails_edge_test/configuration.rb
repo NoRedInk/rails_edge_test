@@ -9,6 +9,7 @@ module RailsEdgeTest
       @before_suite_blocks = []
       @before_each_blocks = []
       @after_each_blocks = []
+      @after_suite_blocks = []
     end
 
     # Provide any Module here with methods you would like to be able to
@@ -34,12 +35,21 @@ module RailsEdgeTest
       @after_each_blocks << block
     end
 
+    # Provide a block to be executed once after runny all `edge` blocks
+    def after_suite(&block)
+      @after_suite_blocks << block
+    end
+
     def wrap_suite_execution(&block)
       @before_suite_blocks.each do |before_suit_block|
         before_suit_block.call
       end
 
       block.call
+
+      @after_suite_blocks.each do |after_suit_block|
+        after_suit_block.call
+      end
     end
 
     def wrap_edge_execution(&edge)

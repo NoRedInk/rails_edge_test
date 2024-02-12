@@ -198,9 +198,48 @@ RSpec.describe RailsEdgeTest::Configuration do
     end
   end
 
+  describe "#after_suite(&block)" do
+    it "executes the after_suite blocks after the edges" do
+      count_down = 3
+
+      RailsEdgeTest.configure do |config|
+        config.after_suite { count_down -= 1 }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.after_suite { count_down -= 1 }
+      end
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller Namespace::ConfigurationController do
+          action :simple do
+            edge "t minus" do
+              raise RuntimeError unless count_down == 3
+              count_down -= 1
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(count_down).to eq 0
+    end
+  end
+
   describe "before and after blocks" do
     it "execute in the correct order" do
       order = []
+
+      RailsEdgeTest.configure do |config|
+        config.after_suite { order << :first_after_suite }
+      end
+
+      RailsEdgeTest.configure do |config|
+        config.after_suite { order << :second_after_suite }
+      end
 
       RailsEdgeTest.configure do |config|
         config.after_each { order << :first_after_each }
@@ -261,6 +300,9 @@ RSpec.describe RailsEdgeTest::Configuration do
         :second_edge,
         :first_after_each,
         :second_after_each,
+
+        :first_after_suite,
+        :second_after_suite,
       ]
 
     end
