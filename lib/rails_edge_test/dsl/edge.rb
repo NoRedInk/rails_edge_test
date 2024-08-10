@@ -38,7 +38,7 @@ module RailsEdgeTest::Dsl
       process(parameters)
     end
 
-    def process(parameters = {})
+    def process(parameters={})
       request.assign_parameters(
         ::Rails.application.routes,
         controller_class.controller_path,

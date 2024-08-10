@@ -151,7 +151,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
       expect(test_value[2].body).to eq({hello: 'world'}.to_json)
     end
-    
+
     it "can incorporate request, session, and params when making a request" do
       test_value = nil
       expected_value = {
