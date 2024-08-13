@@ -4,4 +4,4 @@
 SCRIPT=`realpath $0`
 CWD=`dirname $SCRIPT`
 
-cd $CWD && bundix -m --ruby=ruby_2_5
+cd $CWD && bundix -m --ruby=ruby_3_1

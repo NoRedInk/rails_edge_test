@@ -18,3 +18,5 @@
 
 # nixified bundle
 /nix/vendor
+.direnv/
+vendor

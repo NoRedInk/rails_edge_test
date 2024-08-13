@@ -12,6 +12,10 @@ class MyController < ActionController::Base
       redirect_to '/'
     end
   end
+
+  def post_action
+    render json: {hello: 'world'}
+  end
 end
 
 AnotherController = Class.new ActionController::Base do
@@ -25,6 +29,7 @@ RSpec.describe RailsEdgeTest::Dsl do
     Rails.application.routes.draw do
       get 'test/simple' => 'my#simple'
       get 'test/complex' => 'my#complex'
+      get 'test/post_action' => 'my#post_action'
 
       get 'test/another' => 'another#another'
     end
@@ -122,6 +127,29 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
       expect(test_value[2].body).to eq({my: 'response'}.to_json)
+    end
+
+    it "can perform a post request" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :post_action do
+            edge "post :post_action" do
+              test_value = perform_post
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value[0]).to eq 200
+      expect(test_value[1]).to be_a Hash
+      expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
+      expect(test_value[2].body).to eq({hello: 'world'}.to_json)
     end
 
     it "can incorporate request, session, and params when making a request" do

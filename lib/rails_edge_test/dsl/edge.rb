@@ -28,7 +28,17 @@ module RailsEdgeTest::Dsl
       @response
     end
 
-    def perform_get(parameters = {})
+    def perform_get(parameters={})
+      process(parameters)
+    end
+
+    def perform_post(parameters={})
+      request.instance_variable_set(:@method, "POST")
+      request.env['REQUEST_METHOD'] = "POST"
+      process(parameters)
+    end
+
+    def process(parameters={})
       request.assign_parameters(
         ::Rails.application.routes,
         controller_class.controller_path,
