@@ -2,6 +2,7 @@
 
 ## Version 2.0.0: August 13, 2024
 - drops support for Ruby 2.*
+- adds `post` method for simulating post requests
 
 ## Version 1.2.3: December 8, 2020
 - Add rails 6 support (#39)
