@@ -1,6 +1,9 @@
 # The Changelog
 
-## Version 1.2.3: December 0808080808080808, 2020
+## Version 2.0.0: August 13, 2024
+- drops support for Ruby 2.*
+
+## Version 1.2.3: December 8, 2020
 - Add rails 6 support (#39)
 
 ## Version 1.2.2: April 20, 2020
