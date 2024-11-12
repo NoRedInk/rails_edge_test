@@ -16,6 +16,10 @@ class MyController < ActionController::Base
   def post_action
     render json: {hello: 'world'}
   end
+
+  def delete_action
+    render json: {this: 'deletes'}
+  end
 end
 
 AnotherController = Class.new ActionController::Base do
@@ -30,6 +34,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       get 'test/simple' => 'my#simple'
       get 'test/complex' => 'my#complex'
       get 'test/post_action' => 'my#post_action'
+      delete 'test/delete_action' => 'my#delete_action'
 
       get 'test/another' => 'another#another'
     end
@@ -150,6 +155,29 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
       expect(test_value[2].body).to eq({hello: 'world'}.to_json)
+    end
+
+    it "can perform a delete request" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :delete_action do
+            edge "delete :delete_action" do
+              test_value = perform_delete
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value[0]).to eq 200
+      expect(test_value[1]).to be_a Hash
+      expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
+      expect(test_value[2].body).to eq({this: 'deletes'}.to_json)
     end
 
     it "can incorporate request, session, and params when making a request" do
