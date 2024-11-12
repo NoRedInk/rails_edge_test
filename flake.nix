@@ -63,13 +63,12 @@
           env
           ;
 
+        formatter = pkgs.nixfmt-rfc-style;
         devShells = rec {
           default = dev;
           dev = pkgs.mkShell {
             buildInputs = (
-              (with pkgs; [
-                sqlite
-              ])
+              (with pkgs; [ sqlite ])
               ++ [
                 env
                 bundixcli

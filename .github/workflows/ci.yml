@@ -29,3 +29,6 @@ jobs:
 
       - name: Run rubocop
         run: nix develop --command rubocop
+
+      - name: Run nix formatter
+        run: nix fmt -- --check .
