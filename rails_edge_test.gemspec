@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "actionpack", ">= 5.2.0", "< 7.1.0"
+  spec.required_ruby_version = '>= 3.0.0'
 
   spec.add_development_dependency "rails", ">= 5.2", "< 7.1.0"
   spec.add_development_dependency "sqlite3", "~> 2.0.4"
