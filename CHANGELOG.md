@@ -1,5 +1,9 @@
 # The Changelog
 
+## Version 2.1.0: August 13, 2024
+- adds `delete` method for simulating delete requests
+- adds `set_authenticity_token` method for setting the authenticity token in the header & session
+
 ## Version 2.0.0: August 13, 2024
 - drops support for Ruby 2.*
 - adds `post` method for simulating post requests

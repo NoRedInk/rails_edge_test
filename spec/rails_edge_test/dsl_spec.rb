@@ -16,6 +16,10 @@ class MyController < ActionController::Base
   def post_action
     render json: {hello: 'world'}
   end
+
+  def delete_action
+    render json: {this: 'deletes'}
+  end
 end
 
 AnotherController = Class.new ActionController::Base do
@@ -29,7 +33,8 @@ RSpec.describe RailsEdgeTest::Dsl do
     Rails.application.routes.draw do
       get 'test/simple' => 'my#simple'
       get 'test/complex' => 'my#complex'
-      get 'test/post_action' => 'my#post_action'
+      post 'test/post_action' => 'my#post_action'
+      delete 'test/delete_action' => 'my#delete_action'
 
       get 'test/another' => 'another#another'
     end
@@ -150,6 +155,52 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
       expect(test_value[2].body).to eq({hello: 'world'}.to_json)
+    end
+
+    it "can perform a delete request" do
+      test_value = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :delete_action do
+            edge "delete :delete_action" do
+              test_value = perform_delete
+            end
+          end
+        end
+      end
+
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_value[0]).to eq 200
+      expect(test_value[1]).to be_a Hash
+      expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
+      expect(test_value[2].body).to eq({this: 'deletes'}.to_json)
+    end
+
+    it "can set authenticity token for the request" do
+      test_request = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :simple do
+            edge "set the authenticity token" do
+              test_request = request
+
+              set_authenticity_token
+            end
+          end
+        end
+      end
+
+      allow_any_instance_of(MyController).to receive(:form_authenticity_token).and_return('a_test_token')
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_request.headers['X-CSRF-Token']).to eq 'a_test_token'
     end
 
     it "can incorporate request, session, and params when making a request" do
