@@ -180,6 +180,29 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[2].body).to eq({this: 'deletes'}.to_json)
     end
 
+    it "can set authenticity token for the request" do
+      test_request = nil
+
+      Module.new do
+        extend RailsEdgeTest::Dsl
+
+        controller MyController do
+          action :simple do
+            edge "set the authenticity token" do
+              test_request = request
+
+              set_authenticity_token
+            end
+          end
+        end
+      end
+
+      allow_any_instance_of(MyController).to receive(:form_authenticity_token).and_return('a_test_token')
+      RailsEdgeTest::Dsl.execute!
+
+      expect(test_request.headers['X-CSRF-Token']).to eq 'a_test_token'
+    end
+
     it "can incorporate request, session, and params when making a request" do
       test_value = nil
       expected_value = {
