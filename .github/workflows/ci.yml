@@ -26,3 +26,6 @@ jobs:
 
       - name: Run tests
         run: nix develop --command rspec
+
+      - name: Run rubocop
+        run: nix develop --command rubocop
