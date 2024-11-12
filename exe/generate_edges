@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'open3'
 require 'rails_edge_test'
@@ -12,11 +13,10 @@ def find_gemfile_dir(path)
   else
     new_path = File.expand_path('..', path)
 
-    if path == new_path
-      raise 'Could not find directory with Gemfile'
-    else
-      find_gemfile_dir(new_path)
-    end
+    raise 'Could not find directory with Gemfile' if path == new_path
+
+    find_gemfile_dir(new_path)
+
   end
 end
 

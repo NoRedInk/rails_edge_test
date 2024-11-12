@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RailsEdgeTest
   class Configuration
     attr_accessor :elm_path, :edge_root_path, :printer
@@ -35,23 +37,17 @@ module RailsEdgeTest
     end
 
     def wrap_suite_execution(&block)
-      @before_suite_blocks.each do |before_suit_block|
-        before_suit_block.call
-      end
+      @before_suite_blocks.each(&:call)
 
       block.call
     end
 
     def wrap_edge_execution(&edge)
-      @before_each_blocks.each do |before_each_block|
-        before_each_block.call
-      end
+      @before_each_blocks.each(&:call)
 
       edge.call
 
-      @after_each_blocks.each do |after_each_block|
-        after_each_block.call
-      end
+      @after_each_blocks.each(&:call)
     end
   end
 end

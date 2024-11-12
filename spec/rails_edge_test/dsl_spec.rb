@@ -1,30 +1,32 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 class MyController < ActionController::Base
   def simple
-    render json: {my: 'response'}
+    render json: { my: 'response' }
   end
 
   def complex
     if request.xhr?
-      render json: {local: 'info', params: params, session: session.to_h}
+      render json: { local: 'info', params: params, session: session.to_h }
     else
       redirect_to '/'
     end
   end
 
   def post_action
-    render json: {hello: 'world'}
+    render json: { hello: 'world' }
   end
 
   def delete_action
-    render json: {this: 'deletes'}
+    render json: { this: 'deletes' }
   end
 end
 
 AnotherController = Class.new ActionController::Base do
   def another
-    render json: {another: 'response'}
+    render json: { another: 'response' }
   end
 end
 
@@ -39,6 +41,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       get 'test/another' => 'another#another'
     end
   end
+
   after(:all) do
     Rails.application.reload_routes!
   end
@@ -47,9 +50,8 @@ RSpec.describe RailsEdgeTest::Dsl do
     RailsEdgeTest::Dsl.reset!
   end
 
-  context "within an edge" do
-
-    it "has access to an instance of the specific controller" do
+  context 'within an edge' do
+    it 'has access to an instance of the specific controller' do
       test_value = nil
 
       Module.new do
@@ -57,7 +59,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "do very little" do
+            edge 'do very little' do
               test_value = controller
             end
           end
@@ -69,7 +71,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value).to be_a MyController
     end
 
-    it "has access to a Request object" do
+    it 'has access to a Request object' do
       test_value = nil
 
       Module.new do
@@ -77,7 +79,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "do very little" do
+            edge 'do very little' do
               test_value = request
             end
           end
@@ -89,7 +91,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value).to be_a ActionController::TestRequest
     end
 
-    it "has access to a Session object" do
+    it 'has access to a Session object' do
       test_value = nil
 
       Module.new do
@@ -97,7 +99,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "set the session" do
+            edge 'set the session' do
               test_value = session
               session[:beyonce] = 'run the world'
             end
@@ -111,7 +113,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[:beyonce]).to eq 'run the world'
     end
 
-    it "can perform a get request" do
+    it 'can perform a get request' do
       test_value = nil
 
       Module.new do
@@ -119,7 +121,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "get :simple" do
+            edge 'get :simple' do
               test_value = perform_get
             end
           end
@@ -131,10 +133,10 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[0]).to eq 200
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
-      expect(test_value[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value[2].body).to eq({ my: 'response' }.to_json)
     end
 
-    it "can perform a post request" do
+    it 'can perform a post request' do
       test_value = nil
 
       Module.new do
@@ -142,7 +144,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :post_action do
-            edge "post :post_action" do
+            edge 'post :post_action' do
               test_value = perform_post
             end
           end
@@ -154,10 +156,10 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[0]).to eq 200
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
-      expect(test_value[2].body).to eq({hello: 'world'}.to_json)
+      expect(test_value[2].body).to eq({ hello: 'world' }.to_json)
     end
 
-    it "can perform a delete request" do
+    it 'can perform a delete request' do
       test_value = nil
 
       Module.new do
@@ -165,7 +167,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :delete_action do
-            edge "delete :delete_action" do
+            edge 'delete :delete_action' do
               test_value = perform_delete
             end
           end
@@ -177,10 +179,10 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[0]).to eq 200
       expect(test_value[1]).to be_a Hash
       expect(test_value[2]).to be_a ActionDispatch::Response::RackBody
-      expect(test_value[2].body).to eq({this: 'deletes'}.to_json)
+      expect(test_value[2].body).to eq({ this: 'deletes' }.to_json)
     end
 
-    it "can set authenticity token for the request" do
+    it 'can set authenticity token for the request' do
       test_request = nil
 
       Module.new do
@@ -188,7 +190,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "set the authenticity token" do
+            edge 'set the authenticity token' do
               test_request = request
 
               set_authenticity_token
@@ -203,12 +205,12 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_request.headers['X-CSRF-Token']).to eq 'a_test_token'
     end
 
-    it "can incorporate request, session, and params when making a request" do
+    it 'can incorporate request, session, and params when making a request' do
       test_value = nil
       expected_value = {
         local: 'info',
-        params: {adele: 'hello', controller: 'my', action: 'complex'},
-        session: {britney: 'toxic'}
+        params: { adele: 'hello', controller: 'my', action: 'complex' },
+        session: { britney: 'toxic' }
       }
 
       Module.new do
@@ -216,8 +218,8 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :complex do
-            edge "get :complex" do
-              request.headers["HTTP_X_REQUESTED_WITH"] = "XMLHttpRequest"
+            edge 'get :complex' do
+              request.headers['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
               session[:britney] = 'toxic'
               test_value = perform_get(adele: 'hello')
             end
@@ -233,7 +235,7 @@ RSpec.describe RailsEdgeTest::Dsl do
       expect(test_value[2].body).to eq(expected_value.to_json)
     end
 
-    it "will execute multiple edges on the same action" do
+    it 'executes multiple edges on the same action' do
       test_value_one = nil
       test_value_two = nil
 
@@ -242,11 +244,11 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "get :simple" do
+            edge 'get :simple' do
               test_value_one = perform_get
             end
 
-            edge "just looking" do
+            edge 'just looking' do
               test_value_two = controller
             end
           end
@@ -255,11 +257,11 @@ RSpec.describe RailsEdgeTest::Dsl do
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value_one[2].body).to eq({ my: 'response' }.to_json)
       expect(test_value_two).to be_a MyController
     end
 
-    it "will execute multiple edges on different actions" do
+    it 'executes multiple edges on different actions' do
       test_value_one = nil
       test_value_two = nil
 
@@ -268,13 +270,13 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "get :simple" do
+            edge 'get :simple' do
               test_value_one = perform_get
             end
           end
 
           action :complex do
-            edge "redirecting" do
+            edge 'redirecting' do
               test_value_two = perform_get
             end
           end
@@ -283,11 +285,11 @@ RSpec.describe RailsEdgeTest::Dsl do
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
+      expect(test_value_one[2].body).to eq({ my: 'response' }.to_json)
       expect(test_value_two[0]).to eq 302
     end
 
-    it "will execute multiple edges on different controllers" do
+    it 'executes multiple edges on different controllers' do
       test_value_one = nil
       test_value_two = nil
 
@@ -296,7 +298,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller MyController do
           action :simple do
-            edge "get :simple" do
+            edge 'get :simple' do
               test_value_one = perform_get
             end
           end
@@ -308,7 +310,7 @@ RSpec.describe RailsEdgeTest::Dsl do
 
         controller AnotherController do
           action :another do
-            edge "get :another" do
+            edge 'get :another' do
               test_value_two = perform_get
             end
           end
@@ -317,8 +319,8 @@ RSpec.describe RailsEdgeTest::Dsl do
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(test_value_one[2].body).to eq({my: 'response'}.to_json)
-      expect(test_value_two[2].body).to eq({another: 'response'}.to_json)
+      expect(test_value_one[2].body).to eq({ my: 'response' }.to_json)
+      expect(test_value_two[2].body).to eq({ another: 'response' }.to_json)
     end
   end
 end

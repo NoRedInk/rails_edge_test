@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module RailsEdgeTest
   module Runner
     module_function
+
     def go!(args = [])
       unless Rails.env.test?
-        puts "Failure! Unable to set Rails environment to test."
+        puts 'Failure! Unable to set Rails environment to test.'
         exit
       end
 
@@ -19,7 +22,7 @@ module RailsEdgeTest
           )
         end
 
-      Dir.glob(paths_to_load).sort.each do |file|
+      Dir.glob(paths_to_load).each do |file|
         load file
       end
 
@@ -27,13 +30,13 @@ module RailsEdgeTest
     end
 
     def load_rails_environment!(rails_root)
-      ENV["RAILS_ENV"]="test"
-      rails_app_path = File.join(rails_root, "config/application")
+      ENV['RAILS_ENV'] = 'test'
+      rails_app_path = File.join(rails_root, 'config/application')
       require rails_app_path
 
       Rails.application.require_environment!
 
-      require "rake"
+      require 'rake'
       Rails.application.load_tasks
     end
   end

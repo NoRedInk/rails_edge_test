@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe RailsEdgeTest::Runner do
@@ -18,15 +20,14 @@ RSpec.describe RailsEdgeTest::Runner do
     end
   end
 
-
-  it "creates the files with the expected contents" do
-    expect(File.exists? expected_home_filepath).to be false
-    expect(File.exists? expected_other_filepath).to be false
+  it 'creates the files with the expected contents' do
+    expect(File.exist?(expected_home_filepath)).to be false
+    expect(File.exist?(expected_other_filepath)).to be false
 
     RailsEdgeTest::Runner.go!
 
-    expect(File.exists? expected_home_filepath).to be true
-    expect(File.exists? expected_other_filepath).to be true
+    expect(File.exist?(expected_home_filepath)).to be true
+    expect(File.exist?(expected_other_filepath)).to be true
 
     elm = File.open(expected_home_filepath, 'r').read(nil)
     expect(elm).to eq(<<~ELM)
@@ -43,15 +44,15 @@ RSpec.describe RailsEdgeTest::Runner do
     ELM
   end
 
-  it "only creates files that match the args" do
-    expect(File.exists? expected_home_filepath).to be false
-    expect(File.exists? expected_other_filepath).to be false
+  it 'only creates files that match the args' do
+    expect(File.exist?(expected_home_filepath)).to be false
+    expect(File.exist?(expected_other_filepath)).to be false
 
     # Provide filepath relative to edge_root_path
-    RailsEdgeTest::Runner.go!(["spec/support/test_app/edge/another_edge.rb"])
+    RailsEdgeTest::Runner.go!(['spec/support/test_app/edge/another_edge.rb'])
 
-    expect(File.exists? expected_home_filepath).to be false
-    expect(File.exists? expected_other_filepath).to be true
+    expect(File.exist?(expected_home_filepath)).to be false
+    expect(File.exist?(expected_other_filepath)).to be true
 
     elm = File.open(expected_other_filepath, 'r').read(nil)
     expect(elm).to eq(<<~ELM)
@@ -68,15 +69,15 @@ RSpec.describe RailsEdgeTest::Runner do
     ELM
   end
 
-  it "allows full paths for creating files" do
-    expect(File.exists? expected_home_filepath).to be false
-    expect(File.exists? expected_other_filepath).to be false
+  it 'allows full paths for creating files' do
+    expect(File.exist?(expected_home_filepath)).to be false
+    expect(File.exist?(expected_other_filepath)).to be false
 
     # Provide full filepath relative to root
-    RailsEdgeTest::Runner.go!(["spec/support/test_app/edge/another_edge.rb"])
+    RailsEdgeTest::Runner.go!(['spec/support/test_app/edge/another_edge.rb'])
 
-    expect(File.exists? expected_home_filepath).to be false
-    expect(File.exists? expected_other_filepath).to be true
+    expect(File.exist?(expected_home_filepath)).to be false
+    expect(File.exist?(expected_other_filepath)).to be true
 
     elm = File.open(expected_other_filepath, 'r').read(nil)
     expect(elm).to eq(<<~ELM)
