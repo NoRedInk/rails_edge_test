@@ -44,6 +44,12 @@ module RailsEdgeTest::Dsl
       process(parameters)
     end
 
+    def set_authenticity_token
+      r = request
+      controller.instance_eval { @_request = r }
+      request.headers['X-CSRF-Token'] = controller.send :form_authenticity_token
+    end
+
     def process(parameters={})
       request.assign_parameters(
         ::Rails.application.routes,
