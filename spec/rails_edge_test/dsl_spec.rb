@@ -33,7 +33,7 @@ RSpec.describe RailsEdgeTest::Dsl do
     Rails.application.routes.draw do
       get 'test/simple' => 'my#simple'
       get 'test/complex' => 'my#complex'
-      get 'test/post_action' => 'my#post_action'
+      post 'test/post_action' => 'my#post_action'
       delete 'test/delete_action' => 'my#delete_action'
 
       get 'test/another' => 'another#another'
