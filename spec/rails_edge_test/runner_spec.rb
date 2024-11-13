@@ -14,10 +14,7 @@ RSpec.describe RailsEdgeTest::Runner do
     end
 
     # ensure the elm_path directory always starts empty
-    begin
-      FileUtils.remove_entry_secure(File.join(elm_path, 'Edge'))
-    rescue Errno::ENOENT
-    end
+    FileUtils.rm_rf(elm_path.join('Edge'))
   end
 
   it 'creates the files with the expected contents' do

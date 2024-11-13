@@ -14,13 +14,6 @@ Layout/LineLength:
   Exclude:
     - 'rails_edge_test.gemspec'
 
-# Offense count: 2
-# Configuration parameters: AllowComments, AllowNil.
-Lint/SuppressedException:
-  Exclude:
-    - 'spec/rails_edge_test/dsl/edge_spec.rb'
-    - 'spec/rails_edge_test/runner_spec.rb'
-
 # Offense count: 1
 RSpec/AnyInstance:
   Exclude:

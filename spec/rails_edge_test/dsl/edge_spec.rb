@@ -55,10 +55,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
     end
 
     # ensure the elm_path directory always starts empty
-    begin
-      FileUtils.remove_entry_secure(File.join(elm_path, 'Edge'))
-    rescue Errno::ENOENT
-    end
+    FileUtils.rm_rf(File.join(elm_path, 'Edge'))
   end
 
   let(:elm_path) { File.expand_path('../../tmp', File.dirname(__FILE__)) }
