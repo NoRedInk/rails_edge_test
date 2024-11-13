@@ -11,7 +11,9 @@ Gem::Specification.new do |spec|
   spec.email         = ['josh@noredink.com']
 
   spec.summary       = 'Generate json for front-end testing using your rails backend.'
-  spec.description   = 'Keep your backend and front-end specs in sync! The rails_edge_test gem provides a dsl and rake task that uses your Rails app to generate json and appropriate wrapper files for use in your front-end testing.'
+  spec.description   = 'Keep your backend and front-end specs in sync! The rails_edge_test gem provides a dsl and ' \
+                       'rake task that uses your Rails app to generate json and appropriate wrapper files for use in ' \
+                       'your front-end testing.'
   spec.homepage      = 'https://github.com/NoRedInk/rails_edge_test'
   spec.license       = 'MIT'
 

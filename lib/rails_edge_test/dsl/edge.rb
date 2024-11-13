@@ -99,7 +99,9 @@ module RailsEdgeTest
       private
 
       def produce_json(ivar: nil)
-        raise 'Must perform a request (for example `perform_get`) before attempting to produce a json file.' unless response
+        unless response
+          raise 'Must perform a request (for example `perform_get`) before attempting to produce a json file.'
+        end
 
         raise 'Request did not result in a successful (2xx) response!' if response.is_a?(Array) && response[0] >= 300
 
