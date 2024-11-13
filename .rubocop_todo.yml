@@ -14,17 +14,6 @@ Layout/LineLength:
   Exclude:
     - 'rails_edge_test.gemspec'
 
-# Offense count: 8
-RSpec/BeforeAfterAll:
-  Exclude:
-    - '**/spec/spec_helper.rb'
-    - '**/spec/rails_helper.rb'
-    - '**/spec/support/**/*.rb'
-    - 'spec/rails_edge_test/configuration_spec.rb'
-    - 'spec/rails_edge_test/dsl/edge_spec.rb'
-    - 'spec/rails_edge_test/dsl/let_handler_spec.rb'
-    - 'spec/rails_edge_test/dsl_spec.rb'
-
 # Offense count: 1
 # Configuration parameters: Prefixes, AllowedPatterns.
 # Prefixes: when, with, without

@@ -9,6 +9,7 @@ class LetHandlerController < ActionController::Base
 end
 
 RSpec.describe RailsEdgeTest::Dsl::LetHandler do
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'let_handler#simple'
@@ -18,6 +19,7 @@ RSpec.describe RailsEdgeTest::Dsl::LetHandler do
   after(:all) do
     Rails.application.reload_routes!
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     RailsEdgeTest::Dsl.reset!

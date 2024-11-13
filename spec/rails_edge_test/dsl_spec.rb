@@ -31,6 +31,7 @@ AnotherController = Class.new ActionController::Base do
 end
 
 RSpec.describe RailsEdgeTest::Dsl do
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'my#simple'
@@ -45,6 +46,7 @@ RSpec.describe RailsEdgeTest::Dsl do
   after(:all) do
     Rails.application.reload_routes!
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     RailsEdgeTest::Dsl.reset!

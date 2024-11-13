@@ -11,6 +11,7 @@ module Namespace
 end
 
 RSpec.describe RailsEdgeTest::Configuration do
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'namespace/edge#simple'
@@ -20,6 +21,7 @@ RSpec.describe RailsEdgeTest::Configuration do
   after(:all) do
     Rails.application.reload_routes!
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     RailsEdgeTest::Dsl.reset!
