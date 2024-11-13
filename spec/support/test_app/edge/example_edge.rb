@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-include RailsEdgeTest::Dsl
+include RailsEdgeTest::Dsl # rubocop:disable Style/MixinUsage
 
 controller ApplicationController do
   action :home do

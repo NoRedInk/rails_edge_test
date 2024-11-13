@@ -52,7 +52,7 @@ RSpec.describe RailsEdgeTest::Dsl do
     RailsEdgeTest::Dsl.reset!
   end
 
-  context 'within an edge' do
+  context 'when within an edge' do
     it 'has access to an instance of the specific controller' do
       test_value = nil
 

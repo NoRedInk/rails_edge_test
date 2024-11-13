@@ -23,7 +23,3 @@ module RailsEdgeTest
     @configuration ||= Configuration.new
   end
 end
-
-# TODO:
-# - Flesh out the README
-# - Refactor LetHelper to define a Module, and include it when necessary

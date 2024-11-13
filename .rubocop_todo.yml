@@ -6,33 +6,14 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
+# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Max, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
 # URISchemes: http, https
 Layout/LineLength:
   Exclude:
+    - 'lib/rails_edge_test/dsl/edge.rb'
     - 'rails_edge_test.gemspec'
-
-# Offense count: 1
-# Configuration parameters: Prefixes, AllowedPatterns.
-# Prefixes: when, with, without
-RSpec/ContextWording:
-  Exclude:
-    - 'spec/rails_edge_test/dsl_spec.rb'
-
-# Offense count: 2
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/rails_edge_test/runner_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: Keywords, RequireColon.
-# Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW, NOTE
-Style/CommentAnnotation:
-  Exclude:
-    - 'lib/rails_edge_test.rb'
 
 # Offense count: 8
 # Configuration parameters: AllowedConstants.
@@ -49,8 +30,8 @@ Style/Documentation:
     - 'lib/rails_edge_test/printers/tree.rb'
     - 'lib/rails_edge_test/runner.rb'
 
-# Offense count: 2
-Style/MixinUsage:
+# Offense count: 1
+# This cop supports safe autocorrection (--autocorrect).
+Style/IfUnlessModifier:
   Exclude:
-    - 'spec/support/test_app/edge/another_edge.rb'
-    - 'spec/support/test_app/edge/example_edge.rb'
+    - 'lib/rails_edge_test/dsl/edge.rb'
