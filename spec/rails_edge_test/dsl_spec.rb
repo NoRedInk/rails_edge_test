@@ -199,7 +199,7 @@ RSpec.describe RailsEdgeTest::Dsl do
         end
       end
 
-      allow_any_instance_of(MyController).to receive(:form_authenticity_token).and_return('a_test_token')
+      allow_any_instance_of(MyController).to receive(:form_authenticity_token).and_return('a_test_token') # rubocop:disable RSpec/AnyInstance
       RailsEdgeTest::Dsl.execute!
 
       expect(test_request.headers['X-CSRF-Token']).to eq 'a_test_token'

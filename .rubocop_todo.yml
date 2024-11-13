@@ -14,11 +14,6 @@ Layout/LineLength:
   Exclude:
     - 'rails_edge_test.gemspec'
 
-# Offense count: 1
-RSpec/AnyInstance:
-  Exclude:
-    - 'spec/rails_edge_test/dsl_spec.rb'
-
 # Offense count: 8
 RSpec/BeforeAfterAll:
   Exclude:
