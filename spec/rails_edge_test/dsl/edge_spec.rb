@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 module Namespace
@@ -9,15 +11,15 @@ module Namespace
 
   class EdgeController < ActionController::Base
     def simple
-      render json: {my: 'response'}
+      render json: { my: 'response' }
     end
 
     def escape
-      render json: {escape: 'this "string" please'}
+      render json: { escape: 'this "string" please' }
     end
 
     def ivar
-      @page_data = {to: 'be embedded'}
+      @page_data = { to: 'be embedded' }
       head :ok
     end
 
@@ -31,8 +33,8 @@ module Namespace
   end
 end
 
-
 RSpec.describe RailsEdgeTest::Dsl::Edge do
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'namespace/edge#simple'
@@ -41,9 +43,11 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       get 'test/ivar_requires_as_json' => 'namespace/edge#ivar_requires_as_json'
     end
   end
+
   after(:all) do
     Rails.application.reload_routes!
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     RailsEdgeTest::Dsl.reset!
@@ -53,34 +57,30 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
     end
 
     # ensure the elm_path directory always starts empty
-    begin
-      FileUtils.remove_entry_secure(File.join(elm_path, 'Edge'))
-    rescue Errno::ENOENT
-    end
+    FileUtils.rm_rf(File.join(elm_path, 'Edge'))
   end
-
 
   let(:elm_path) { File.expand_path('../../tmp', File.dirname(__FILE__)) }
 
-  describe "#produce_elm_file(module_name, ivar: nil)" do
-    let(:expected_filepath) {
+  describe '#produce_elm_file(module_name, ivar: nil)' do
+    let(:expected_filepath) do
       File.join(
         elm_path,
         'Edge/Namespace/EdgeController/',
-        module_name+'.elm'
+        "#{module_name}.elm"
       )
-    }
+    end
     let(:module_name) { 'MyResponse' }
 
-    it "creates a file in the expected location" do
-      expect(File.exists? expected_filepath).to be false
+    it 'creates a file in the expected location' do
+      expect(File.exist?(expected_filepath)).to be false
 
       Module.new do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::EdgeController do
           action :simple do
-            edge "elm" do
+            edge 'elm' do
               perform_get
               produce_elm_file('MyResponse')
             end
@@ -90,16 +90,16 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(File.exists? expected_filepath).to be true
+      expect(File.exist?(expected_filepath)).to be true
     end
 
-    it "creates a file with the expected contents" do
+    it 'creates a file with the expected contents' do
       Module.new do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::EdgeController do
           action :simple do
-            edge "elm" do
+            edge 'elm' do
               perform_get
               produce_elm_file('MyResponse')
             end
@@ -124,13 +124,13 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       ELM
     end
 
-    it "properly escapes the json string" do
+    it 'properly escapes the json string' do
       Module.new do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::EdgeController do
           action :escape do
-            edge "elm" do
+            edge 'elm' do
               perform_get
               produce_elm_file('MyResponse')
             end
@@ -155,13 +155,13 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       ELM
     end
 
-    it "can grab the json out of an instance variable" do
+    it 'can grab the json out of an instance variable' do
       Module.new do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::EdgeController do
           action :ivar do
-            edge "elm" do
+            edge 'elm' do
               perform_get
               produce_elm_file('MyResponse', ivar: :@page_data)
             end
@@ -186,13 +186,13 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       ELM
     end
 
-    it "can correctly renders ivars containing objects that define as_json " do
+    it 'can correctly renders ivars containing objects that define as_json' do
       Module.new do
         extend RailsEdgeTest::Dsl
 
         controller Namespace::EdgeController do
           action :ivar_requires_as_json do
-            edge "elm" do
+            edge 'elm' do
               perform_get
               produce_elm_file('MyResponse', ivar: :@page_data)
             end
@@ -220,8 +220,8 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
     end
   end
 
-  describe "a method defined within an action block" do
-    it "is callable within an edge block inside that action block" do
+  describe 'a method defined within an action block' do
+    it 'is callable within an edge block inside that action block' do
       test_value = nil
 
       Module.new do
@@ -233,7 +233,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
               'genie in a bottle'
             end
 
-            edge "call method" do
+            edge 'call method' do
               test_value = christina
             end
           end
@@ -245,7 +245,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       expect(test_value).to eq 'genie in a bottle'
     end
 
-    it "is callable with arguments and optional block" do
+    it 'is callable with arguments and optional block' do
       test_value = nil
       block_test_value = nil
 
@@ -255,11 +255,11 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
         controller Namespace::EdgeController do
           action :simple do
             def christina(what, &block)
-              block.call(what) if block
+              block&.call(what)
               "#{what} in a bottle"
             end
 
-            edge "call method" do
+            edge 'call method' do
               # verify it works without a block
               christina('genie')
 
@@ -278,7 +278,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       expect(block_test_value).to eq 'genie'
     end
 
-    it "is not callable within a different action block" do
+    it 'is not callable within a different action block' do
       Module.new do
         extend RailsEdgeTest::Dsl
 
@@ -288,24 +288,24 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
               'genie in a bottle'
             end
 
-            edge "call method" do
+            edge 'call method' do
               christina
             end
           end
           action :simple do
-            edge "invalid" do
+            edge 'invalid' do
               christina
             end
           end
         end
       end
 
-      expect {
+      expect do
         RailsEdgeTest::Dsl.execute!
-      }.to raise_error(NameError, /christina/)
+      end.to raise_error(NameError, /christina/)
     end
 
-    it "is callable from a let block" do
+    it 'is callable from a let block' do
       test_value = nil
 
       Module.new do
@@ -319,7 +319,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
 
             let(:gaga) { christina.gsub('genie', 'dance') }
 
-            edge "callable from let" do
+            edge 'callable from let' do
               test_value = gaga
             end
           end
@@ -332,8 +332,8 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
     end
   end
 
-  describe "a method defined within a controller block" do
-    it "is callable within an edge block inside that controller block" do
+  describe 'a method defined within a controller block' do
+    it 'is callable within an edge block inside that controller block' do
       test_value = nil
 
       Module.new do
@@ -345,7 +345,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
           end
 
           action :simple do
-            edge "call method" do
+            edge 'call method' do
               test_value = christina
             end
           end
@@ -357,7 +357,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       expect(test_value).to eq 'genie in a bottle'
     end
 
-    it "allows to be called from multiple actions"  do
+    it 'allows to be called from multiple actions' do
       first_result = second_result = nil
 
       Module.new do
@@ -369,13 +369,13 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
           end
 
           action :first do
-            edge "call method" do
+            edge 'call method' do
               first_result = christina
             end
           end
 
           action :second do
-            edge "call method" do
+            edge 'call method' do
               second_result = christina
             end
           end
@@ -388,7 +388,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       expect(second_result).to eq 'genie in a bottle'
     end
 
-    it "allows to be overridden by a method defined in the action" do
+    it 'allows to be overridden by a method defined in the action' do
       test_value = nil
 
       Module.new do
@@ -404,7 +404,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
               'genie in a lamp'
             end
 
-            edge "call let" do
+            edge 'call let' do
               test_value = christina
             end
           end
@@ -416,7 +416,7 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
       expect(test_value).to eq 'genie in a lamp'
     end
 
-    it "allows let blocks inside an action to reference methods inside a controller" do
+    it 'allows let blocks inside an action to reference methods inside a controller' do
       test_value = nil
 
       Module.new do
@@ -428,9 +428,9 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
           end
 
           action :first do
-            let(:christie) { christina + ' and a lamp' }
+            let(:christie) { "#{christina} and a lamp" }
 
-            edge "call method" do
+            edge 'call method' do
               test_value = christie
             end
           end
@@ -455,14 +455,14 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
 
           controller Namespace::EdgeController2 do
             action :first do
-              edge "call method" do
+              edge 'call method' do
                 christina
               end
             end
           end
         end
 
-        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+        expect { RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
       end
 
       it "can't be referenced across actions" do
@@ -476,20 +476,20 @@ RSpec.describe RailsEdgeTest::Dsl::Edge do
                 'genie in a bottle'
               end
 
-              edge "call method" do
+              edge 'call method' do
                 test_value = christina
               end
             end
 
             action :second do
-              edge "call method with failure" do
+              edge 'call method with failure' do
                 christina
               end
             end
           end
         end
 
-        expect{ RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
+        expect { RailsEdgeTest::Dsl.execute! }.to raise_error(NameError, /christina/)
         expect(test_value).to eq('genie in a bottle')
       end
     end

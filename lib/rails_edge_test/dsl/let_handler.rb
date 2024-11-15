@@ -1,22 +1,24 @@
-module RailsEdgeTest::Dsl
-  class LetHandler
-    attr_reader :let_blocks
+# frozen_string_literal: true
 
-    def initialize
-      @let_blocks = {}
-    end
+module RailsEdgeTest
+  module Dsl
+    class LetHandler
+      attr_reader :let_blocks
 
-    def add_definition(title, &block)
-      @let_blocks[title] = block
-    end
-
-    def execute(title)
-      block = @let_blocks[title]
-      unless block
-        fail NoMethodError, "no method or let block defined with name #{title}"
+      def initialize
+        @let_blocks = {}
       end
 
-      block.call
+      def add_definition(title, &block)
+        @let_blocks[title] = block
+      end
+
+      def execute(title)
+        block = @let_blocks[title]
+        raise NoMethodError, "no method or let block defined with name #{title}" unless block
+
+        block.call
+      end
     end
   end
 end

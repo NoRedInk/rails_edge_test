@@ -1,35 +1,39 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 module Namespace
   class ConfigurationController < ActionController::Base
     def simple
-      render json: {my: 'response'}
+      render json: { my: 'response' }
     end
   end
 end
 
 RSpec.describe RailsEdgeTest::Configuration do
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     Rails.application.routes.draw do
       get 'test/simple' => 'namespace/edge#simple'
     end
   end
+
   after(:all) do
     Rails.application.reload_routes!
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     RailsEdgeTest::Dsl.reset!
   end
 
-
-  describe "#include(mod)" do
-    it "makes module callable from helper functions" do
+  describe '#include(mod)' do
+    it 'makes module callable from helper functions' do
       count = 0
 
       increment_module = Module.new do
         define_method :increment_count do
-          count = count + 1
+          count += 1
         end
       end
 
@@ -46,7 +50,7 @@ RSpec.describe RailsEdgeTest::Configuration do
               increment_count
             end
 
-            edge "increment twice" do
+            edge 'increment twice' do
               controller_increment
               action_increment
             end
@@ -63,7 +67,7 @@ RSpec.describe RailsEdgeTest::Configuration do
       expect(count).to eq 2
     end
 
-    it "includes the module in each edge" do
+    it 'includes the module in each edge' do
       meant_to = nil
 
       nicki = Module.new do
@@ -77,7 +81,7 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "blast off" do
+            edge 'blast off' do
               starships
             end
           end
@@ -94,8 +98,8 @@ RSpec.describe RailsEdgeTest::Configuration do
     end
   end
 
-  describe "#before_suite(&block)" do
-    it "executes the before_suite blocks before the edges" do
+  describe '#before_suite(&block)' do
+    it 'executes the before_suite blocks before the edges' do
       count_down = 3
 
       RailsEdgeTest.configure do |config|
@@ -111,7 +115,7 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "t minus" do
+            edge 't minus' do
               count_down -= 1
             end
           end
@@ -124,8 +128,8 @@ RSpec.describe RailsEdgeTest::Configuration do
     end
   end
 
-  describe "#before_each(&block)" do
-    it "executes the before_each blocks before each edge" do
+  describe '#before_each(&block)' do
+    it 'executes the before_each blocks before each edge' do
       count_down = 7
 
       RailsEdgeTest.configure do |config|
@@ -141,13 +145,13 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "first" do
+            edge 'first' do
               count_down -= 1
             end
           end
 
           action :simple do
-            edge "second" do
+            edge 'second' do
               count_down -= 1
               count_down -= 1
             end
@@ -161,8 +165,8 @@ RSpec.describe RailsEdgeTest::Configuration do
     end
   end
 
-  describe "#after_each(&block)" do
-    it "executes the before_each blocks before each edge" do
+  describe '#after_each(&block)' do
+    it 'executes the before_each blocks before each edge' do
       count_down = 7
 
       RailsEdgeTest.configure do |config|
@@ -178,13 +182,13 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "first" do
+            edge 'first' do
               count_down -= 1
             end
           end
 
           action :simple do
-            edge "second" do
+            edge 'second' do
               count_down -= 1
               count_down -= 1
             end
@@ -198,8 +202,8 @@ RSpec.describe RailsEdgeTest::Configuration do
     end
   end
 
-  describe "before and after blocks" do
-    it "execute in the correct order" do
+  describe 'before and after blocks' do
+    it 'execute in the correct order' do
       order = []
 
       RailsEdgeTest.configure do |config|
@@ -231,13 +235,13 @@ RSpec.describe RailsEdgeTest::Configuration do
 
         controller Namespace::ConfigurationController do
           action :simple do
-            edge "first" do
+            edge 'first' do
               order << :first_edge
             end
           end
 
           action :simple do
-            edge "second" do
+            edge 'second' do
               order << :second_edge
             end
           end
@@ -246,23 +250,22 @@ RSpec.describe RailsEdgeTest::Configuration do
 
       RailsEdgeTest::Dsl.execute!
 
-      expect(order).to eq [
-        :first_before_suite,
-        :second_before_suite,
+      expect(order).to eq %i[
+        first_before_suite
+        second_before_suite
 
-        :first_before_each,
-        :second_before_each,
-        :first_edge,
-        :first_after_each,
-        :second_after_each,
+        first_before_each
+        second_before_each
+        first_edge
+        first_after_each
+        second_after_each
 
-        :first_before_each,
-        :second_before_each,
-        :second_edge,
-        :first_after_each,
-        :second_after_each,
+        first_before_each
+        second_before_each
+        second_edge
+        first_after_each
+        second_after_each
       ]
-
     end
   end
 end

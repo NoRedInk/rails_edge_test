@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RailsEdgeTest
   module Dsl
     def controller(controller_class, &block)
@@ -16,7 +18,6 @@ module RailsEdgeTest
         printer.begin_suite
 
         RailsEdgeTest.configuration.wrap_suite_execution do
-
           @controllers.each do |controller|
             printer.begin_controller(controller)
 
@@ -40,7 +41,6 @@ module RailsEdgeTest
 
             printer.end_controller
           end
-
         end
         printer.end_suite
       end
