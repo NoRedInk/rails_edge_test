@@ -34,7 +34,7 @@
           (
             assert (
               pkgs.lib.assertMsg (builtins.toString pkg.version == version) ''
-                Expecting version of ${pkg.name} to be ${version} but got ${pkg.version};
+                Expecting version of ${pkg.name} to be ${version} (this may be in .ruby-version) but got ${pkg.version};
               ''
             );
             pkg
