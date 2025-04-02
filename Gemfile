@@ -5,7 +5,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in rails_edge_test.gemspec
 gemspec
 
-gem 'appraisal', '~> 2.3'
 gem 'rails', '>= 5.2', '< 7.1.0'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.9'

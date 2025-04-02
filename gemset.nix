@@ -238,22 +238,6 @@
     targets = [ ];
     version = "7.0.8.6";
   };
-  appraisal = {
-    dependencies = [
-      "rake"
-      "thor"
-    ];
-    groups = [ "development" ];
-    platforms = [ ];
-    source = {
-      remotes = [ "https://rubygems.org" ];
-      sha256 = "1knkxrjagaqf418lkgd7xvfb5rh143d19ld8vfq16y8jpqhr561n";
-      target = "ruby";
-      type = "gem";
-    };
-    targets = [ ];
-    version = "2.5.0";
-  };
   ast = {
     groups = [ "default" ];
     platforms = [ ];
