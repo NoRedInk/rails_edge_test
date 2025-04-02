@@ -7,7 +7,7 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     ruby-nix.url = "github:inscapist/ruby-nix";
     # a fork that supports platform dependant gem
     bundix = {
