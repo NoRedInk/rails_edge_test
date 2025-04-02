@@ -38,7 +38,7 @@
         #   https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/ruby-modules/gem-config/default.nix
         gemConfig = { };
 
-        ruby = pkgs.ruby_3_1;
+        ruby = pkgs.ruby_3_2;
 
         # Running bundix regenerate `gemset.nix`
         bundixcli = bundix.packages.${system}.default;
