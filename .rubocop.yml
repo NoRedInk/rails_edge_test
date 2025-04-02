@@ -3,9 +3,8 @@ AllCops:
   NewCops: enable
   SuggestExtensions:
     rubocop-rails: false
-  TargetRubyVersion: 3.0
 
-require:
+plugins:
   - rubocop-rspec
   - rubocop-rake
 

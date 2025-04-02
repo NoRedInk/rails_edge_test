@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.executables << 'generate_edges'
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'actionpack', '>= 5.2.0', '< 7.1.0'
+  spec.add_dependency 'actionpack', '>= 7.0.0', '< 8.0.0'
   spec.required_ruby_version = '>= 3.0.0'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
