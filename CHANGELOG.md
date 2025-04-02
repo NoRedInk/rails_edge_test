@@ -1,6 +1,6 @@
 # The Changelog
 
-## Version 3.0.0: Unreleased
+## Version 3.0.0: April 2, 2025
 - drops support for ruby < 3.1, rails < 7
 - adds support for ruby 3.2, rails 7.2
 
