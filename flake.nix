@@ -29,6 +29,17 @@
     eachDefaultSystem (
       system:
       let
+        assertVersion =
+          version: pkg:
+          (
+            assert (
+              pkgs.lib.assertMsg (builtins.toString pkg.version == version) ''
+                Expecting version of ${pkg.name} to be ${version} but got ${pkg.version};
+              ''
+            );
+            pkg
+          );
+
         pkgs = import nixpkgs { inherit system; };
         rubyNix = ruby-nix.lib pkgs;
 
@@ -38,7 +49,7 @@
         #   https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/ruby-modules/gem-config/default.nix
         gemConfig = { };
 
-        ruby = pkgs.ruby_3_2;
+        ruby = (assertVersion (pkgs.lib.strings.fileContents "${self}/.ruby-version") pkgs.ruby_3_2);
 
         # Running bundix regenerate `gemset.nix`
         bundixcli = bundix.packages.${system}.default;
